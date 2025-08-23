@@ -21,9 +21,11 @@ Perfect — let’s break this monster into **bite-sized milestones** so you’r
 
 ✅ Outcome: You have `data/raw/players_index.csv` with all NFL players and IDs.
 
-* Implement `scripts/build_players_index.py` to crawl `/players/A/` → `/players/Z/`.
-* Save CSV with: `player_id, full_name, first_year, last_year, pos, teams`.
-* Sanity check: \~27k rows, Tom Brady, Peyton Manning, Jerry Rice all present.
+* Implement `scripts/build_players_index.py` to load nflverse datasets via nflreadr.
+* Combine `load_players()`, `load_rosters()`, `load_draft_picks()`, and `load_combine()`.
+* Save CSV with: `player_id, full_name, first_year, last_year, primary_pos, teams, draft_info`.
+* Sanity check: \~27k+ rows, Tom Brady, Peyton Manning, Jerry Rice all present.
+* Data spans 2002+ with comprehensive biographical and positional data.
   👉 Now you can browse the pool.
 
 ---
@@ -127,4 +129,6 @@ Perfect — let’s break this monster into **bite-sized milestones** so you’r
 
 ---
 
-👉 Question for you: do you want me to **draft the code for Milestone 2 (build the player index script)** so you can immediately grab the master pool of \~27k players from PFR? That’s the key unlock before you can do anything else.
+👉 Question for you: do you want me to **draft the code for Milestone 2 (build the player index script)** so you can immediately grab the master pool of \~27k+ players from nflverse-data? That's the key unlock before you can do anything else.
+
+**Note:** Using nflverse-data instead of PFR scraping respects data usage policies while providing comprehensive, regularly-updated NFL datasets including player biographical info, rosters, combine data, and draft history.

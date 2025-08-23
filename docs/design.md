@@ -22,9 +22,19 @@ We want to create a **systematic, programmatic pipeline** that generates an All-
 
 ## 3. Data Sources
 
-* **PFR exports** (manual or scripted): career, season, advanced stats, AV, honors.
-* **Combine/Pro-day** data (where available).
-* **PFR Index stats (+ metrics)** for era-adjustment (e.g., ANY/A+, Int%+).
+* **nflverse-data** (via nflreadr R package): comprehensive NFL data ecosystem with player stats, rosters, biographical info, combine data, and draft information.
+  * `load_players()`: Player biographical information and position mappings
+  * `load_player_stats()`: Historical weekly/seasonal player performance statistics including:
+    * **Passing**: completions, attempts, yards, TDs, INTs, sacks, air yards, EPA
+    * **Rushing**: carries, yards, TDs, fumbles, first downs, EPA  
+    * **Receiving**: receptions, targets, yards, TDs, air yards, YAC
+    * **Kicking**: FG made/attempted by distance, XP, blocked kicks
+    * **Defense**: tackles, sacks, interceptions, etc.
+    * **Advanced metrics**: fantasy points, PACR, target share, WOPR
+  * `load_rosters()`: Team rosters dating back to 2002
+  * `load_combine()`: NFL Combine performance data
+  * `load_draft_picks()`: Draft history and pick information
+  * `load_nextgen_stats()`: Advanced player performance metrics
 * **Madden historical ratings dataset** (for supervised learning).
 
 ---
@@ -35,13 +45,14 @@ The Football Ratings Canonical Schema (FRCS) is our **truth layer**. It uses sem
 
 ### 4.1 Player Identity
 
-* `player_id` (PFR id)
+* `player_id` (nflverse gsis_id or other stable identifier)
 * `full_name`
 * `primary_pos`, `secondary_pos`
 * `era_bucket`
 * `birth_year`, `height_in`, `weight_lb`
 * `years_active`, `teams`
-* `honors`: All-Pro, Pro Bowls, HOF, AV
+* `honors`: All-Pro, Pro Bowls, HOF
+* `draft_info`: Draft year, round, pick number, college
 
 ### 4.2 Ratings (long form)
 
@@ -191,9 +202,9 @@ madden-roster/
     utils.py               # Safe expr eval, scaling, clamping helpers used by exporters
 
   data/
-    raw/                   # Unprocessed pulls/exports straight from source (CSV/HTML dumps)
-      players_index.csv    # MASTER PLAYER LIST from PFR A–Z (source of truth for IDs)
-      pfr_exports/         # Optional: manual CSV exports you’ve saved from PFR tables
+    raw/                   # Unprocessed pulls/exports straight from source (CSV/Parquet files)
+      players_index.csv    # MASTER PLAYER LIST from nflverse (source of truth for IDs)
+      nflverse_exports/    # Raw datasets from nflverse-data (players, rosters, stats, combine)
     staging/               # Temporary joins/intermediate parquet during a run
     snapshots/             # IMMUTABLE versioned datasets produced by pipeline
       2025-08-23/
@@ -209,7 +220,7 @@ madden-roster/
 
   pipeline/
     __init__.py
-    ingest_pfr.py          # Fetch/parse PFR A–Z, build players_index; optional season fetchers
+    ingest_nflverse.py     # Load nflverse datasets, build unified players_index
     normalize.py           # Clean, dedupe, identity resolution; era bucketing
     peaks.py               # Peak-window detection and scoring
     rank.py                # Combine peak/career/era scores → RankScore; apply quotas
@@ -237,7 +248,7 @@ madden-roster/
     02_attribute_sanity.ipynb # Visualize distributions & spot-check ratings
 
   scripts/
-    build_players_index.py # CLI: crawl PFR A–Z → data/raw/players_index.csv
+    build_players_index.py # CLI: load nflverse datasets → data/raw/players_index.csv
     run_snapshot.py        # CLI: full snapshot build from raw → snapshots/DATE
     make_export.py         # CLI: export given snapshot with selected adapter
 
@@ -281,7 +292,7 @@ madden-roster/
 
 **pipeline/**
 
-* *ingest\_pfr.py*: Functions to build `players_index.csv` (from A–Z pages) and, optionally, to fetch season tables for a subset of players.
+* *ingest\_nflverse.py*: Functions to load nflverse datasets and build unified `players_index.csv` from multiple data sources.
 * *normalize.py*: Identity cleanup, name diacritics, position harmonization, era buckets.
 * *peaks.py / rank.py*: Peak window finder + composite ranking and quota allocation.
 * *ratings/*: Attribute mappers by position; split into small testable functions (e.g., `map_wr_speed(row, era_ctx)`).
@@ -294,7 +305,7 @@ madden-roster/
 
 **scripts/**
 
-* *build\_players\_index.py*: Minimal CLI to crawl PFR A–Z and write `data/raw/players_index.csv`.
+* *build\_players\_index.py*: CLI to load nflverse datasets and write unified `data/raw/players_index.csv`.
 * *run\_snapshot.py*: Orchestrates ingest → normalize → peaks → rank → ratings → snapshot write.
 * *make\_export.py*: Runs exporter for a chosen snapshot and adapter.
 
