@@ -1,0 +1,32 @@
+2025-08-23 10:50:36,689 - __main__ - INFO - === nflverse-data Player Index Builder (Proof of Concept) ===
+2025-08-23 10:50:36,695 - __main__ - INFO - Testing nflverse-data connection...
+2025-08-23 10:50:36,695 - __main__ - INFO - Loading players data (sample)...
+2025-08-23 10:50:38,828 - __main__ - INFO - Players data loaded: 24534 records
+2025-08-23 10:50:38,828 - __main__ - INFO - Players columns: ['gsis_id', 'display_name', 'common_first_name', 'first_name', 'last_name', 'short_name', 'football_name', 'suffix', 'esb_id', 'nfl_id', 'pfr_id', 'pff_id', 'otc_id', 'espn_id', 'smart_id', 'birth_date', 'position_group', 'position', 'ngs_position_group', 'ngs_position', 'height', 'weight', 'headshot', 'college_name', 'college_conference', 'jersey_number', 'rookie_season', 'last_season', 'latest_team', 'status', 'ngs_status', 'ngs_status_short_description', 'years_of_experience', 'pff_position', 'pff_status', 'draft_year', 'draft_round', 'draft_pick', 'draft_team']
+2025-08-23 10:50:38,828 - __main__ - INFO - Sample players:
+2025-08-23 10:50:38,829 - __main__ - INFO -   - Isaako Aaitui (NT)
+2025-08-23 10:50:38,829 - __main__ - INFO -   - Israel Abanikanda (RB)
+2025-08-23 10:50:38,829 - __main__ - INFO -   - Jon Abbate (LB)
+2025-08-23 10:50:38,829 - __main__ - INFO - Loading recent roster data (sample)...
+2025-08-23 10:50:38,829 - __main__ - ERROR - ❌ Error testing nflverse connection: module 'nfl_data_py' has no attribute 'import_rosters'
+2025-08-23 10:50:38,832 - __main__ - ERROR - Connection test failed. Check nfl-data-py installation.
+2025-08-23 10:51:17,095 - __main__ - INFO - === nflverse-data Player Index Builder (Proof of Concept) ===
+2025-08-23 10:51:17,096 - __main__ - INFO - Testing nflverse-data connection...
+2025-08-23 10:51:17,096 - __main__ - INFO - Loading players data (sample)...
+2025-08-23 10:51:17,459 - __main__ - INFO - Players data loaded: 24534 records
+2025-08-23 10:51:17,459 - __main__ - INFO - Players columns: ['gsis_id', 'display_name', 'common_first_name', 'first_name', 'last_name', 'short_name', 'football_name', 'suffix', 'esb_id', 'nfl_id', 'pfr_id', 'pff_id', 'otc_id', 'espn_id', 'smart_id', 'birth_date', 'position_group', 'position', 'ngs_position_group', 'ngs_position', 'height', 'weight', 'headshot', 'college_name', 'college_conference', 'jersey_number', 'rookie_season', 'last_season', 'latest_team', 'status', 'ngs_status', 'ngs_status_short_description', 'years_of_experience', 'pff_position', 'pff_status', 'draft_year', 'draft_round', 'draft_pick', 'draft_team']
+2025-08-23 10:51:17,459 - __main__ - INFO - Sample players:
+2025-08-23 10:51:17,459 - __main__ - INFO -   - Isaako Aaitui (NT)
+2025-08-23 10:51:17,459 - __main__ - INFO -   - Israel Abanikanda (RB)
+2025-08-23 10:51:17,459 - __main__ - INFO -   - Jon Abbate (LB)
+2025-08-23 10:51:17,459 - __main__ - INFO - Loading seasonal roster data (sample)...
+2025-08-23 10:51:17,866 - __main__ - INFO - Seasonal rosters data loaded: 3089 records
+2025-08-23 10:51:17,866 - __main__ - INFO - Rosters columns: ['season', 'team', 'position', 'depth_chart_position', 'jersey_number', 'status', 'player_name', 'first_name', 'last_name', 'birth_date', 'height', 'weight', 'college', 'player_id', 'espn_id', 'sportradar_id', 'yahoo_id', 'rotowire_id', 'pff_id', 'pfr_id', 'fantasy_data_id', 'sleeper_id', 'years_exp', 'headshot_url', 'ngs_position', 'week', 'game_type', 'status_description_abbr', 'football_name', 'esb_id', 'gsis_it_id', 'smart_id', 'entry_year', 'rookie_year', 'draft_club', 'draft_number', 'age']
+2025-08-23 10:51:17,866 - __main__ - INFO - Loading combine data (sample)...
+2025-08-23 10:51:18,357 - __main__ - INFO - Combine data loaded: 319 records
+2025-08-23 10:51:18,357 - __main__ - INFO - Combine columns: ['season', 'draft_year', 'draft_team', 'draft_round', 'draft_ovr', 'pfr_id', 'cfb_id', 'player_name', 'pos', 'school', 'ht', 'wt', 'forty', 'bench', 'vertical', 'broad_jump', 'cone', 'shuttle']
+2025-08-23 10:51:18,358 - __main__ - INFO - Loading draft picks (sample)...
+2025-08-23 10:51:18,727 - __main__ - INFO - Draft data loaded: 259 records
+2025-08-23 10:51:18,727 - __main__ - INFO - Draft columns: ['season', 'round', 'pick', 'team', 'gsis_id', 'pfr_player_id', 'cfb_player_id', 'pfr_player_name', 'hof', 'position', 'category', 'side', 'college', 'age', 'to', 'allpro', 'probowls', 'seasons_started', 'w_av', 'car_av', 'dr_av', 'games', 'pass_completions', 'pass_attempts', 'pass_yards', 'pass_tds', 'pass_ints', 'rush_atts', 'rush_yards', 'rush_tds', 'receptions', 'rec_yards', 'rec_tds', 'def_solo_tackles', 'def_ints', 'def_sacks']
+2025-08-23 10:51:18,727 - __main__ - INFO - ✅ nflverse-data connection test successful!
+2025-08-23 10:51:18,734 - __main__ - INFO - Test-only mode complete.
