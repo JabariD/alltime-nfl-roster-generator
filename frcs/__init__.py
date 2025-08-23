@@ -1,0 +1,1 @@
+# FRCS - Football Ratings Canonical Schema

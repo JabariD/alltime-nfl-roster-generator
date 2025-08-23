@@ -1,0 +1,5 @@
+# Placeholder for Madden 26 adapter
+# TODO: Implement FRCS -> Madden 26 field mappings
+version: "1.0.0"
+game: "madden_26"
+fields: {}
