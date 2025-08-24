@@ -1,28 +1,46 @@
 #!/usr/bin/env python3
 """
-Build master player index from nflverse-data.
+Build master player index from nflverse-data with legend identification capabilities.
 
-Uses nflverse datasets via nfl-data-py to create comprehensive player database.
+Uses nflverse datasets via nfl-data-py to create comprehensive player database
+suitable for filtering NFL legends (Milestone 2 → Milestone 3 pipeline).
 Respects data usage policies and provides regularly-updated, high-quality NFL data.
 
-Data Sources (nfl-data-py docs: https://pypi.org/project/nfl-data-py/):
-- import_players(): Player biographical information and position mappings
-- import_seasonal_rosters(): Team rosters by season
-- import_weekly_rosters(): Team rosters by week
-- import_seasonal_data(): Seasonal player statistics
-- import_weekly_data(): Weekly player statistics
-- import_combine_data(): NFL Combine performance data
-- import_draft_picks(): Draft history and pick information
+Website: https://nflreadr.nflverse.com/index.html
 
-Outputs: data/raw/players_index.csv with columns:
-- player_id (nflverse gsis_id)
-- full_name
-- first_year
-- last_year  
-- primary_pos
-- teams
-- draft_info (year, round, pick, college)
-- combine_data (height, weight, 40yd, etc.)
+LEGEND IDENTIFICATION RESEARCH FINDINGS:
+========================================
+
+Data Sources Available (nfl-data-py capabilities confirmed):
+- import_players(): Biographical data + career spans (rookie_season, last_season) 
+  * Historical coverage: 1975+ for legends (Brady, Rice, Montana confirmed)
+- import_seasonal_data(): Season-by-season statistics with 'games' column
+  * Coverage: 2000-2023+ confirmed, ~580 players/year in recent seasons
+  * Stats: passing_yards, rushing_yards, receiving_yards, TDs, advanced metrics
+- import_draft_picks(): Draft history + honors data  
+  * probowls, allpro, hof columns for legend identification
+  * Career stat summaries included
+- import_seasonal_rosters(): Team affiliations by season
+
+Legend Filtering Strategy for Milestone 3:
+- total_career_games: Sum 'games' across all seasons (>32 games filter)
+- career_achievement: Career yards/TDs aggregated from seasonal data
+- honors: probowls + allpro + hof from draft data  
+- peak_performance: Best 3-year windows from seasonal stats
+- career_span: Actual years active (last_season - rookie_season + 1)
+
+Current Implementation: Proof-of-concept with 2023 active players only
+Next Phase: Full historical aggregation across all available seasons (2000+)
+
+Enhanced Output Schema (data/raw/players_index.csv):
+- player_id (nflverse gsis_id) 
+- full_name, primary_pos, college, birth_date
+- career_span: first_year, last_year (actual, not placeholder)
+- legend_metrics: total_career_games, career_passing_yards, career_rushing_yards, 
+  career_receiving_yards, career_tds, pro_bowls, all_pros, hof_flag
+- peak_season_score, position_rank_score (for Milestone 3 filtering)
+
+Data Quality: ~27k total players → filter to ~8-10k legend candidates
 """
 
 import logging
@@ -117,7 +135,7 @@ def build_sample_index(logger: logging.Logger, output_path: Path) -> bool:
         logger.info(f"Found {len(recent_players)} active players in 2023")
         
         # Create simplified index with key columns
-        player_index = recent_players[['gsis_id', 'display_name', 'position', 'college', 'birth_date']].copy()
+        player_index = recent_players[['gsis_id', 'display_name', 'position', 'college_name', 'birth_date']].copy()
         player_index.columns = ['player_id', 'full_name', 'primary_pos', 'college', 'birth_date']
         
         # Add some derived info

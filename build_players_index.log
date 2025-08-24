@@ -30,3 +30,57 @@
 2025-08-23 10:51:18,727 - __main__ - INFO - Draft columns: ['season', 'round', 'pick', 'team', 'gsis_id', 'pfr_player_id', 'cfb_player_id', 'pfr_player_name', 'hof', 'position', 'category', 'side', 'college', 'age', 'to', 'allpro', 'probowls', 'seasons_started', 'w_av', 'car_av', 'dr_av', 'games', 'pass_completions', 'pass_attempts', 'pass_yards', 'pass_tds', 'pass_ints', 'rush_atts', 'rush_yards', 'rush_tds', 'receptions', 'rec_yards', 'rec_tds', 'def_solo_tackles', 'def_ints', 'def_sacks']
 2025-08-23 10:51:18,727 - __main__ - INFO - ✅ nflverse-data connection test successful!
 2025-08-23 10:51:18,734 - __main__ - INFO - Test-only mode complete.
+2025-08-23 18:00:25,389 - __main__ - INFO - === nflverse-data Player Index Builder (Proof of Concept) ===
+2025-08-23 18:00:25,391 - __main__ - INFO - Testing nflverse-data connection...
+2025-08-23 18:00:25,391 - __main__ - INFO - Loading players data (sample)...
+2025-08-23 18:00:26,030 - __main__ - INFO - Players data loaded: 24534 records
+2025-08-23 18:00:26,030 - __main__ - INFO - Players columns: ['gsis_id', 'display_name', 'common_first_name', 'first_name', 'last_name', 'short_name', 'football_name', 'suffix', 'esb_id', 'nfl_id', 'pfr_id', 'pff_id', 'otc_id', 'espn_id', 'smart_id', 'birth_date', 'position_group', 'position', 'ngs_position_group', 'ngs_position', 'height', 'weight', 'headshot', 'college_name', 'college_conference', 'jersey_number', 'rookie_season', 'last_season', 'latest_team', 'status', 'ngs_status', 'ngs_status_short_description', 'years_of_experience', 'pff_position', 'pff_status', 'draft_year', 'draft_round', 'draft_pick', 'draft_team']
+2025-08-23 18:00:26,031 - __main__ - INFO - Sample players:
+2025-08-23 18:00:26,032 - __main__ - INFO -   - Isaako Aaitui (NT)
+2025-08-23 18:00:26,032 - __main__ - INFO -   - Israel Abanikanda (RB)
+2025-08-23 18:00:26,032 - __main__ - INFO -   - Jon Abbate (LB)
+2025-08-23 18:00:26,032 - __main__ - INFO - Loading seasonal roster data (sample)...
+2025-08-23 18:00:26,403 - __main__ - INFO - Seasonal rosters data loaded: 3089 records
+2025-08-23 18:00:26,403 - __main__ - INFO - Rosters columns: ['season', 'team', 'position', 'depth_chart_position', 'jersey_number', 'status', 'player_name', 'first_name', 'last_name', 'birth_date', 'height', 'weight', 'college', 'player_id', 'espn_id', 'sportradar_id', 'yahoo_id', 'rotowire_id', 'pff_id', 'pfr_id', 'fantasy_data_id', 'sleeper_id', 'years_exp', 'headshot_url', 'ngs_position', 'week', 'game_type', 'status_description_abbr', 'football_name', 'esb_id', 'gsis_it_id', 'smart_id', 'entry_year', 'rookie_year', 'draft_club', 'draft_number', 'age']
+2025-08-23 18:00:26,403 - __main__ - INFO - Loading combine data (sample)...
+2025-08-23 18:00:26,773 - __main__ - INFO - Combine data loaded: 319 records
+2025-08-23 18:00:26,773 - __main__ - INFO - Combine columns: ['season', 'draft_year', 'draft_team', 'draft_round', 'draft_ovr', 'pfr_id', 'cfb_id', 'player_name', 'pos', 'school', 'ht', 'wt', 'forty', 'bench', 'vertical', 'broad_jump', 'cone', 'shuttle']
+2025-08-23 18:00:26,773 - __main__ - INFO - Loading draft picks (sample)...
+2025-08-23 18:00:27,184 - __main__ - INFO - Draft data loaded: 259 records
+2025-08-23 18:00:27,184 - __main__ - INFO - Draft columns: ['season', 'round', 'pick', 'team', 'gsis_id', 'pfr_player_id', 'cfb_player_id', 'pfr_player_name', 'hof', 'position', 'category', 'side', 'college', 'age', 'to', 'allpro', 'probowls', 'seasons_started', 'w_av', 'car_av', 'dr_av', 'games', 'pass_completions', 'pass_attempts', 'pass_yards', 'pass_tds', 'pass_ints', 'rush_atts', 'rush_yards', 'rush_tds', 'receptions', 'rec_yards', 'rec_tds', 'def_solo_tackles', 'def_ints', 'def_sacks']
+2025-08-23 18:00:27,184 - __main__ - INFO - ✅ nflverse-data connection test successful!
+2025-08-23 18:00:27,191 - __main__ - INFO - Building sample player index...
+2025-08-23 18:00:27,479 - __main__ - INFO - Loaded 24534 total players
+2025-08-23 18:00:27,678 - __main__ - INFO - Found 2930 active players in 2023
+2025-08-23 18:00:27,678 - __main__ - ERROR - Error building sample index: "['college'] not in index"
+2025-08-23 18:00:27,684 - __main__ - ERROR - ❌ Failed to build player index
+2025-08-23 18:00:44,804 - __main__ - INFO - === nflverse-data Player Index Builder (Proof of Concept) ===
+2025-08-23 18:00:44,804 - __main__ - INFO - Testing nflverse-data connection...
+2025-08-23 18:00:44,804 - __main__ - INFO - Loading players data (sample)...
+2025-08-23 18:00:45,105 - __main__ - INFO - Players data loaded: 24534 records
+2025-08-23 18:00:45,105 - __main__ - INFO - Players columns: ['gsis_id', 'display_name', 'common_first_name', 'first_name', 'last_name', 'short_name', 'football_name', 'suffix', 'esb_id', 'nfl_id', 'pfr_id', 'pff_id', 'otc_id', 'espn_id', 'smart_id', 'birth_date', 'position_group', 'position', 'ngs_position_group', 'ngs_position', 'height', 'weight', 'headshot', 'college_name', 'college_conference', 'jersey_number', 'rookie_season', 'last_season', 'latest_team', 'status', 'ngs_status', 'ngs_status_short_description', 'years_of_experience', 'pff_position', 'pff_status', 'draft_year', 'draft_round', 'draft_pick', 'draft_team']
+2025-08-23 18:00:45,105 - __main__ - INFO - Sample players:
+2025-08-23 18:00:45,106 - __main__ - INFO -   - Isaako Aaitui (NT)
+2025-08-23 18:00:45,106 - __main__ - INFO -   - Israel Abanikanda (RB)
+2025-08-23 18:00:45,106 - __main__ - INFO -   - Jon Abbate (LB)
+2025-08-23 18:00:45,106 - __main__ - INFO - Loading seasonal roster data (sample)...
+2025-08-23 18:00:45,313 - __main__ - INFO - Seasonal rosters data loaded: 3089 records
+2025-08-23 18:00:45,313 - __main__ - INFO - Rosters columns: ['season', 'team', 'position', 'depth_chart_position', 'jersey_number', 'status', 'player_name', 'first_name', 'last_name', 'birth_date', 'height', 'weight', 'college', 'player_id', 'espn_id', 'sportradar_id', 'yahoo_id', 'rotowire_id', 'pff_id', 'pfr_id', 'fantasy_data_id', 'sleeper_id', 'years_exp', 'headshot_url', 'ngs_position', 'week', 'game_type', 'status_description_abbr', 'football_name', 'esb_id', 'gsis_it_id', 'smart_id', 'entry_year', 'rookie_year', 'draft_club', 'draft_number', 'age']
+2025-08-23 18:00:45,313 - __main__ - INFO - Loading combine data (sample)...
+2025-08-23 18:00:45,530 - __main__ - INFO - Combine data loaded: 319 records
+2025-08-23 18:00:45,530 - __main__ - INFO - Combine columns: ['season', 'draft_year', 'draft_team', 'draft_round', 'draft_ovr', 'pfr_id', 'cfb_id', 'player_name', 'pos', 'school', 'ht', 'wt', 'forty', 'bench', 'vertical', 'broad_jump', 'cone', 'shuttle']
+2025-08-23 18:00:45,530 - __main__ - INFO - Loading draft picks (sample)...
+2025-08-23 18:00:45,781 - __main__ - INFO - Draft data loaded: 259 records
+2025-08-23 18:00:45,781 - __main__ - INFO - Draft columns: ['season', 'round', 'pick', 'team', 'gsis_id', 'pfr_player_id', 'cfb_player_id', 'pfr_player_name', 'hof', 'position', 'category', 'side', 'college', 'age', 'to', 'allpro', 'probowls', 'seasons_started', 'w_av', 'car_av', 'dr_av', 'games', 'pass_completions', 'pass_attempts', 'pass_yards', 'pass_tds', 'pass_ints', 'rush_atts', 'rush_yards', 'rush_tds', 'receptions', 'rec_yards', 'rec_tds', 'def_solo_tackles', 'def_ints', 'def_sacks']
+2025-08-23 18:00:45,781 - __main__ - INFO - ✅ nflverse-data connection test successful!
+2025-08-23 18:00:45,789 - __main__ - INFO - Building sample player index...
+2025-08-23 18:00:46,044 - __main__ - INFO - Loaded 24534 total players
+2025-08-23 18:00:46,223 - __main__ - INFO - Found 2930 active players in 2023
+2025-08-23 18:00:46,232 - __main__ - INFO - Sample player index saved: 2930 players → data/raw/players_index.csv
+2025-08-23 18:00:46,232 - __main__ - INFO - Sample entries:
+2025-08-23 18:00:46,232 - __main__ - INFO -   - Israel Abanikanda (RB)
+2025-08-23 18:00:46,232 - __main__ - INFO -   - Ameer Abdullah (RB)
+2025-08-23 18:00:46,232 - __main__ - INFO -   - Yasir Abdullah (LB)
+2025-08-23 18:00:46,232 - __main__ - INFO -   - Micah Abernathy (DB)
+2025-08-23 18:00:46,232 - __main__ - INFO -   - Johnathan Abram (DB)
+2025-08-23 18:00:46,237 - __main__ - INFO - ✅ Sample player index built successfully!
