@@ -607,3 +607,547 @@
 2025-08-24 08:59:33,849 - __main__ - INFO -   Elite linemen (score >70): 292
 2025-08-24 08:59:33,849 - __main__ - INFO -   ✅ Target 700+ linemen: ACHIEVED
 2025-08-24 08:59:33,857 - __main__ - INFO - ✅ Full historical player index built successfully!
+2025-08-24 09:29:25,112 - __main__ - INFO - === nflverse-data Player Index Builder (FULL BUILD) ===
+2025-08-24 09:29:25,443 - __main__ - INFO - Testing nflverse-data connection...
+2025-08-24 09:29:25,444 - __main__ - INFO - Loading players data (sample)...
+2025-08-24 09:29:25,946 - __main__ - INFO - Players data loaded: 24534 records
+2025-08-24 09:29:25,946 - __main__ - INFO - Players columns: ['gsis_id', 'display_name', 'common_first_name', 'first_name', 'last_name', 'short_name', 'football_name', 'suffix', 'esb_id', 'nfl_id', 'pfr_id', 'pff_id', 'otc_id', 'espn_id', 'smart_id', 'birth_date', 'position_group', 'position', 'ngs_position_group', 'ngs_position', 'height', 'weight', 'headshot', 'college_name', 'college_conference', 'jersey_number', 'rookie_season', 'last_season', 'latest_team', 'status', 'ngs_status', 'ngs_status_short_description', 'years_of_experience', 'pff_position', 'pff_status', 'draft_year', 'draft_round', 'draft_pick', 'draft_team']
+2025-08-24 09:29:25,946 - __main__ - INFO - Sample players:
+2025-08-24 09:29:25,948 - __main__ - INFO -   - Isaako Aaitui (NT)
+2025-08-24 09:29:25,948 - __main__ - INFO -   - Israel Abanikanda (RB)
+2025-08-24 09:29:25,948 - __main__ - INFO -   - Jon Abbate (LB)
+2025-08-24 09:29:25,948 - __main__ - INFO - Loading seasonal roster data (sample)...
+2025-08-24 09:29:26,265 - __main__ - INFO - Seasonal rosters data loaded: 3089 records
+2025-08-24 09:29:26,265 - __main__ - INFO - Rosters columns: ['season', 'team', 'position', 'depth_chart_position', 'jersey_number', 'status', 'player_name', 'first_name', 'last_name', 'birth_date', 'height', 'weight', 'college', 'player_id', 'espn_id', 'sportradar_id', 'yahoo_id', 'rotowire_id', 'pff_id', 'pfr_id', 'fantasy_data_id', 'sleeper_id', 'years_exp', 'headshot_url', 'ngs_position', 'week', 'game_type', 'status_description_abbr', 'football_name', 'esb_id', 'gsis_it_id', 'smart_id', 'entry_year', 'rookie_year', 'draft_club', 'draft_number', 'age']
+2025-08-24 09:29:26,265 - __main__ - INFO - Loading combine data (sample)...
+2025-08-24 09:29:26,641 - __main__ - INFO - Combine data loaded: 319 records
+2025-08-24 09:29:26,641 - __main__ - INFO - Combine columns: ['season', 'draft_year', 'draft_team', 'draft_round', 'draft_ovr', 'pfr_id', 'cfb_id', 'player_name', 'pos', 'school', 'ht', 'wt', 'forty', 'bench', 'vertical', 'broad_jump', 'cone', 'shuttle']
+2025-08-24 09:29:26,641 - __main__ - INFO - Loading draft picks (sample)...
+2025-08-24 09:29:26,969 - __main__ - INFO - Draft data loaded: 259 records
+2025-08-24 09:29:26,969 - __main__ - INFO - Draft columns: ['season', 'round', 'pick', 'team', 'gsis_id', 'pfr_player_id', 'cfb_player_id', 'pfr_player_name', 'hof', 'position', 'category', 'side', 'college', 'age', 'to', 'allpro', 'probowls', 'seasons_started', 'w_av', 'car_av', 'dr_av', 'games', 'pass_completions', 'pass_attempts', 'pass_yards', 'pass_tds', 'pass_ints', 'rush_atts', 'rush_yards', 'rush_tds', 'receptions', 'rec_yards', 'rec_tds', 'def_solo_tackles', 'def_ints', 'def_sacks']
+2025-08-24 09:29:26,969 - __main__ - INFO - ✅ nflverse-data connection test successful!
+2025-08-24 09:29:26,977 - __main__ - INFO - Building FULL enhanced player index (complete historical dataset)...
+2025-08-24 09:29:26,977 - __main__ - INFO - Loading players data...
+2025-08-24 09:29:27,280 - __main__ - INFO - Loaded 24534 total players
+2025-08-24 09:29:27,280 - __main__ - INFO - Loading complete seasonal data (1970-2023)...
+2025-08-24 09:29:27,280 - __main__ - WARNING - Failed to load from 1970, falling back to 1999: Data not available before 1999.
+2025-08-24 09:29:34,891 - __main__ - INFO - Loaded 14495 regular season records
+2025-08-24 09:29:34,892 - __main__ - INFO - Loading complete playoff data (1970-2023)...
+2025-08-24 09:29:34,892 - __main__ - WARNING - Failed to load playoff data from 1970, falling back to 1999: Data not available before 1999.
+2025-08-24 09:29:39,301 - __main__ - INFO - Loaded 3211 playoff records
+2025-08-24 09:29:39,301 - __main__ - INFO - Loading complete draft data (1970+)...
+2025-08-24 09:29:39,542 - __main__ - INFO - Loaded 12156 draft records
+2025-08-24 09:29:39,542 - __main__ - INFO - Loading complete combine data...
+2025-08-24 09:29:39,717 - __main__ - INFO - Loaded 7999 combine records
+2025-08-24 09:29:39,718 - __main__ - INFO - Aggregating career statistics...
+2025-08-24 09:29:39,732 - __main__ - INFO - Aggregating playoff statistics...
+2025-08-24 09:29:39,734 - __main__ - INFO - Merging player identity and career data...
+2025-08-24 09:29:39,746 - __main__ - INFO - Merging playoff data...
+2025-08-24 09:29:39,765 - __main__ - INFO - Merging draft/honors data...
+2025-08-24 09:29:39,791 - __main__ - INFO - Merging combine/physical data...
+2025-08-24 09:29:39,810 - __main__ - INFO - Building enhanced output schema...
+2025-08-24 09:29:39,816 - __main__ - INFO - Calculating playoff performance bonus...
+2025-08-24 09:29:39,817 - __main__ - INFO - Filtering for players with career data (includes quality linemen)...
+2025-08-24 09:29:39,866 - __main__ - INFO - Applying enhanced filtering for all position types...
+2025-08-24 09:29:39,935 - __main__ - INFO - Enhanced player index saved: 16413 players → test_improved.csv
+2025-08-24 09:29:39,935 - __main__ - INFO - Sample entries with enhanced schema:
+2025-08-24 09:29:39,935 - __main__ - INFO -   - Isaako Aaitui (NT): 0 seasons, 0 games, 0 TDs, 0 Pro Bowls | Playoffs: 0 games, 0 TDs (bonus: 0.0) | 76.0", 307.0lb, 40yd: N/A
+2025-08-24 09:29:39,935 - __main__ - INFO -   - Israel Abanikanda (RB): 1 seasons, 6 games, 0 TDs, 0 Pro Bowls | Playoffs: 0 games, 0 TDs (bonus: 0.0) | 70.0", 216.0lb, 40yd: N/A
+2025-08-24 09:29:39,935 - __main__ - INFO -   - Jared Abbrederis (WR): 3 seasons, 9 games, 0 TDs, 0 Pro Bowls | Playoffs: 2 games, 0 TDs (bonus: 5.0) | 73.0", 195.0lb, 40yd: 4.5s
+2025-08-24 09:29:39,935 - __main__ - INFO -   - Isa Abdul-Quddus (S): 2 seasons, 3 games, 0 TDs, 0 Pro Bowls | Playoffs: 0 games, 0 TDs (bonus: 0.0) | 73.0", 196.0lb, 40yd: N/A
+2025-08-24 09:29:39,935 - __main__ - INFO -   - Ameer Abdullah (RB): 9 seasons, 97 games, 14 TDs, 0 Pro Bowls | Playoffs: 2 games, 0 TDs (bonus: 5.0) | 69.0", 203.0lb, 40yd: 4.6s
+2025-08-24 09:29:39,935 - __main__ - INFO - Enhanced index summary:
+2025-08-24 09:29:39,935 - __main__ - INFO -   Total players: 16,413
+2025-08-24 09:29:39,936 - __main__ - INFO -   With >10 games: 3,389
+2025-08-24 09:29:39,936 - __main__ - INFO -   With Pro Bowls: 458
+2025-08-24 09:29:39,936 - __main__ - INFO -   With TDs: 2,437
+2025-08-24 09:29:39,936 - __main__ - INFO -   With playoff experience: 1,504
+2025-08-24 09:29:39,936 - __main__ - INFO -   With playoff TDs: 662
+2025-08-24 09:29:39,936 - __main__ - INFO -   With high playoff bonus (>10): 95
+2025-08-24 09:29:39,937 - __main__ - INFO -   With combine data: 5,323
+2025-08-24 09:29:39,937 - __main__ - INFO -   Hall of Fame: 8
+2025-08-24 09:29:39,937 - __main__ - INFO -   === POSITION BREAKDOWN ===
+2025-08-24 09:29:39,938 - __main__ - INFO -     LB: 2,028
+2025-08-24 09:29:39,938 - __main__ - INFO -     DB: 1,815
+2025-08-24 09:29:39,938 - __main__ - INFO -     OT: 1,502
+2025-08-24 09:29:39,938 - __main__ - INFO -     DE: 1,463
+2025-08-24 09:29:39,938 - __main__ - INFO -     G: 1,361
+2025-08-24 09:29:39,938 - __main__ - INFO -     WR: 1,277
+2025-08-24 09:29:39,938 - __main__ - INFO -     DT: 1,186
+2025-08-24 09:29:39,938 - __main__ - INFO -     CB: 1,021
+2025-08-24 09:29:39,938 - __main__ - INFO -     RB: 912
+2025-08-24 09:29:39,938 - __main__ - INFO -     TE: 667
+2025-08-24 09:29:39,938 - __main__ - INFO -     C: 619
+2025-08-24 09:29:39,938 - __main__ - INFO -     OLB: 453
+2025-08-24 09:29:39,938 - __main__ - INFO -     QB: 389
+2025-08-24 09:29:39,938 - __main__ - INFO -     S: 317
+2025-08-24 09:29:39,938 - __main__ - INFO -     FS: 269
+2025-08-24 09:29:39,939 - __main__ - INFO -   === DEFENSIVE PLAYERS ===
+2025-08-24 09:29:39,939 - __main__ - INFO -   Total defensive players: 9,374
+2025-08-24 09:29:39,939 - __main__ - INFO -     LB: 2,028
+2025-08-24 09:29:39,939 - __main__ - INFO -     DB: 1,815
+2025-08-24 09:29:39,939 - __main__ - INFO -     DE: 1,463
+2025-08-24 09:29:39,939 - __main__ - INFO -     DT: 1,186
+2025-08-24 09:29:39,939 - __main__ - INFO -     CB: 1,021
+2025-08-24 09:29:39,939 - __main__ - INFO -     OLB: 453
+2025-08-24 09:29:39,939 - __main__ - INFO -     S: 317
+2025-08-24 09:29:39,939 - __main__ - INFO -     FS: 269
+2025-08-24 09:29:39,939 - __main__ - INFO -     SAF: 257
+2025-08-24 09:29:39,939 - __main__ - INFO -     NT: 210
+2025-08-24 09:29:39,939 - __main__ - INFO -     ILB: 188
+2025-08-24 09:29:39,939 - __main__ - INFO -     MLB: 150
+2025-08-24 09:29:39,939 - __main__ - INFO -     DL: 17
+2025-08-24 09:29:39,941 - __main__ - INFO -   ✅ Defensive line count looks good: 2666
+2025-08-24 09:29:39,941 - __main__ - INFO -   === OFFENSIVE LINEMEN ===
+2025-08-24 09:29:39,941 - __main__ - INFO -   Total linemen: 3,482
+2025-08-24 09:29:39,941 - __main__ - INFO -     OT: 1,502
+2025-08-24 09:29:39,941 - __main__ - INFO -     G: 1,361
+2025-08-24 09:29:39,941 - __main__ - INFO -     C: 619
+2025-08-24 09:29:39,941 - __main__ - INFO -   High-quality linemen (score >50): 720
+2025-08-24 09:29:39,942 - __main__ - INFO -   Elite linemen (score >70): 292
+2025-08-24 09:29:39,942 - __main__ - INFO -   ✅ Target 700+ linemen: ACHIEVED
+2025-08-24 09:29:39,942 - __main__ - INFO - === DATA QUALITY VALIDATION ===
+2025-08-24 09:29:39,942 - __main__ - INFO -   Career year range: 1974 - 2025
+2025-08-24 09:29:39,949 - __main__ - INFO - ✅ Full historical player index built successfully!
+2025-08-24 09:38:40,681 - __main__ - INFO - === nflverse-data Player Index Builder (FULL BUILD) ===
+2025-08-24 09:38:40,896 - __main__ - INFO - Testing nflverse-data connection...
+2025-08-24 09:38:40,897 - __main__ - INFO - Loading players data (sample)...
+2025-08-24 09:38:41,344 - __main__ - INFO - Players data loaded: 24534 records
+2025-08-24 09:38:41,344 - __main__ - INFO - Players columns: ['gsis_id', 'display_name', 'common_first_name', 'first_name', 'last_name', 'short_name', 'football_name', 'suffix', 'esb_id', 'nfl_id', 'pfr_id', 'pff_id', 'otc_id', 'espn_id', 'smart_id', 'birth_date', 'position_group', 'position', 'ngs_position_group', 'ngs_position', 'height', 'weight', 'headshot', 'college_name', 'college_conference', 'jersey_number', 'rookie_season', 'last_season', 'latest_team', 'status', 'ngs_status', 'ngs_status_short_description', 'years_of_experience', 'pff_position', 'pff_status', 'draft_year', 'draft_round', 'draft_pick', 'draft_team']
+2025-08-24 09:38:41,344 - __main__ - INFO - Sample players:
+2025-08-24 09:38:41,344 - __main__ - INFO -   - Isaako Aaitui (NT)
+2025-08-24 09:38:41,344 - __main__ - INFO -   - Israel Abanikanda (RB)
+2025-08-24 09:38:41,344 - __main__ - INFO -   - Jon Abbate (LB)
+2025-08-24 09:38:41,344 - __main__ - INFO - Loading seasonal roster data (sample)...
+2025-08-24 09:38:41,660 - __main__ - INFO - Seasonal rosters data loaded: 3089 records
+2025-08-24 09:38:41,660 - __main__ - INFO - Rosters columns: ['season', 'team', 'position', 'depth_chart_position', 'jersey_number', 'status', 'player_name', 'first_name', 'last_name', 'birth_date', 'height', 'weight', 'college', 'player_id', 'espn_id', 'sportradar_id', 'yahoo_id', 'rotowire_id', 'pff_id', 'pfr_id', 'fantasy_data_id', 'sleeper_id', 'years_exp', 'headshot_url', 'ngs_position', 'week', 'game_type', 'status_description_abbr', 'football_name', 'esb_id', 'gsis_it_id', 'smart_id', 'entry_year', 'rookie_year', 'draft_club', 'draft_number', 'age']
+2025-08-24 09:38:41,660 - __main__ - INFO - Loading combine data (sample)...
+2025-08-24 09:38:41,980 - __main__ - INFO - Combine data loaded: 319 records
+2025-08-24 09:38:41,981 - __main__ - INFO - Combine columns: ['season', 'draft_year', 'draft_team', 'draft_round', 'draft_ovr', 'pfr_id', 'cfb_id', 'player_name', 'pos', 'school', 'ht', 'wt', 'forty', 'bench', 'vertical', 'broad_jump', 'cone', 'shuttle']
+2025-08-24 09:38:41,981 - __main__ - INFO - Loading draft picks (sample)...
+2025-08-24 09:38:42,303 - __main__ - INFO - Draft data loaded: 259 records
+2025-08-24 09:38:42,303 - __main__ - INFO - Draft columns: ['season', 'round', 'pick', 'team', 'gsis_id', 'pfr_player_id', 'cfb_player_id', 'pfr_player_name', 'hof', 'position', 'category', 'side', 'college', 'age', 'to', 'allpro', 'probowls', 'seasons_started', 'w_av', 'car_av', 'dr_av', 'games', 'pass_completions', 'pass_attempts', 'pass_yards', 'pass_tds', 'pass_ints', 'rush_atts', 'rush_yards', 'rush_tds', 'receptions', 'rec_yards', 'rec_tds', 'def_solo_tackles', 'def_ints', 'def_sacks']
+2025-08-24 09:38:42,303 - __main__ - INFO - ✅ nflverse-data connection test successful!
+2025-08-24 09:38:42,311 - __main__ - INFO - Building FULL enhanced player index (complete historical dataset)...
+2025-08-24 09:38:42,311 - __main__ - INFO - Loading players data...
+2025-08-24 09:38:42,629 - __main__ - INFO - Loaded 24534 total players
+2025-08-24 09:38:42,630 - __main__ - INFO - Loading complete seasonal data (1970-2023)...
+2025-08-24 09:38:42,630 - __main__ - WARNING - Failed to load from 1970, falling back to 1999: Data not available before 1999.
+2025-08-24 09:38:51,162 - __main__ - INFO - Loaded 14495 regular season records
+2025-08-24 09:38:51,162 - __main__ - INFO - Loading complete playoff data (1970-2023)...
+2025-08-24 09:38:51,162 - __main__ - WARNING - Failed to load playoff data from 1970, falling back to 1999: Data not available before 1999.
+2025-08-24 09:38:55,698 - __main__ - INFO - Loaded 3211 playoff records
+2025-08-24 09:38:55,698 - __main__ - INFO - Loading complete draft data (1970+)...
+2025-08-24 09:39:14,170 - __main__ - ERROR - Error building enhanced index: <urlopen error [Errno 60] Operation timed out>
+2025-08-24 09:39:14,178 - __main__ - ERROR - Full traceback: Traceback (most recent call last):
+  File "/Users/paytondennis/.local/share/uv/python/cpython-3.12.8-macos-aarch64-none/lib/python3.12/urllib/request.py", line 1344, in do_open
+    h.request(req.get_method(), req.selector, req.data, headers,
+  File "/Users/paytondennis/.local/share/uv/python/cpython-3.12.8-macos-aarch64-none/lib/python3.12/http/client.py", line 1336, in request
+    self._send_request(method, url, body, headers, encode_chunked)
+  File "/Users/paytondennis/.local/share/uv/python/cpython-3.12.8-macos-aarch64-none/lib/python3.12/http/client.py", line 1382, in _send_request
+    self.endheaders(body, encode_chunked=encode_chunked)
+  File "/Users/paytondennis/.local/share/uv/python/cpython-3.12.8-macos-aarch64-none/lib/python3.12/http/client.py", line 1331, in endheaders
+    self._send_output(message_body, encode_chunked=encode_chunked)
+  File "/Users/paytondennis/.local/share/uv/python/cpython-3.12.8-macos-aarch64-none/lib/python3.12/http/client.py", line 1091, in _send_output
+    self.send(msg)
+  File "/Users/paytondennis/.local/share/uv/python/cpython-3.12.8-macos-aarch64-none/lib/python3.12/http/client.py", line 1035, in send
+    self.connect()
+  File "/Users/paytondennis/.local/share/uv/python/cpython-3.12.8-macos-aarch64-none/lib/python3.12/http/client.py", line 1477, in connect
+    self.sock = self._context.wrap_socket(self.sock,
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/paytondennis/.local/share/uv/python/cpython-3.12.8-macos-aarch64-none/lib/python3.12/ssl.py", line 455, in wrap_socket
+    return self.sslsocket_class._create(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/paytondennis/.local/share/uv/python/cpython-3.12.8-macos-aarch64-none/lib/python3.12/ssl.py", line 1041, in _create
+    self.do_handshake()
+  File "/Users/paytondennis/.local/share/uv/python/cpython-3.12.8-macos-aarch64-none/lib/python3.12/ssl.py", line 1319, in do_handshake
+    self._sslobj.do_handshake()
+TimeoutError: [Errno 60] Operation timed out
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/Users/paytondennis/Documents/Code/legends/scripts/build_players_index.py", line 187, in build_sample_index
+    draft_data = nfl.import_draft_picks(years=list(range(1970, 2024)))
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/paytondennis/Documents/Code/legends/.venv/lib/python3.12/site-packages/nfl_data_py/__init__.py", line 655, in import_draft_picks
+    df = pandas.read_parquet(r'https://github.com/nflverse/nflverse-data/releases/download/draft_picks/draft_picks.parquet', engine='auto')
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/paytondennis/Documents/Code/legends/.venv/lib/python3.12/site-packages/pandas/io/parquet.py", line 669, in read_parquet
+    return impl.read(
+           ^^^^^^^^^^
+  File "/Users/paytondennis/Documents/Code/legends/.venv/lib/python3.12/site-packages/pandas/io/parquet.py", line 258, in read
+    path_or_handle, handles, filesystem = _get_path_or_handle(
+                                          ^^^^^^^^^^^^^^^^^^^^
+  File "/Users/paytondennis/Documents/Code/legends/.venv/lib/python3.12/site-packages/pandas/io/parquet.py", line 141, in _get_path_or_handle
+    handles = get_handle(
+              ^^^^^^^^^^^
+  File "/Users/paytondennis/Documents/Code/legends/.venv/lib/python3.12/site-packages/pandas/io/common.py", line 728, in get_handle
+    ioargs = _get_filepath_or_buffer(
+             ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/paytondennis/Documents/Code/legends/.venv/lib/python3.12/site-packages/pandas/io/common.py", line 384, in _get_filepath_or_buffer
+    with urlopen(req_info) as req:
+         ^^^^^^^^^^^^^^^^^
+  File "/Users/paytondennis/Documents/Code/legends/.venv/lib/python3.12/site-packages/pandas/io/common.py", line 289, in urlopen
+    return urllib.request.urlopen(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/paytondennis/.local/share/uv/python/cpython-3.12.8-macos-aarch64-none/lib/python3.12/urllib/request.py", line 215, in urlopen
+    return opener.open(url, data, timeout)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/paytondennis/.local/share/uv/python/cpython-3.12.8-macos-aarch64-none/lib/python3.12/urllib/request.py", line 515, in open
+    response = self._open(req, data)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/paytondennis/.local/share/uv/python/cpython-3.12.8-macos-aarch64-none/lib/python3.12/urllib/request.py", line 532, in _open
+    result = self._call_chain(self.handle_open, protocol, protocol +
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/paytondennis/.local/share/uv/python/cpython-3.12.8-macos-aarch64-none/lib/python3.12/urllib/request.py", line 492, in _call_chain
+    result = func(*args)
+             ^^^^^^^^^^^
+  File "/Users/paytondennis/.local/share/uv/python/cpython-3.12.8-macos-aarch64-none/lib/python3.12/urllib/request.py", line 1392, in https_open
+    return self.do_open(http.client.HTTPSConnection, req,
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/paytondennis/.local/share/uv/python/cpython-3.12.8-macos-aarch64-none/lib/python3.12/urllib/request.py", line 1347, in do_open
+    raise URLError(err)
+urllib.error.URLError: <urlopen error [Errno 60] Operation timed out>
+
+2025-08-24 09:39:14,186 - __main__ - ERROR - ❌ Failed to build player index
+2025-08-24 09:39:48,035 - __main__ - INFO - === nflverse-data Player Index Builder (FULL BUILD) ===
+2025-08-24 09:39:48,253 - __main__ - INFO - Testing nflverse-data connection...
+2025-08-24 09:39:48,253 - __main__ - INFO - Loading players data (sample)...
+2025-08-24 09:39:48,531 - __main__ - INFO - Players data loaded: 24534 records
+2025-08-24 09:39:48,531 - __main__ - INFO - Players columns: ['gsis_id', 'display_name', 'common_first_name', 'first_name', 'last_name', 'short_name', 'football_name', 'suffix', 'esb_id', 'nfl_id', 'pfr_id', 'pff_id', 'otc_id', 'espn_id', 'smart_id', 'birth_date', 'position_group', 'position', 'ngs_position_group', 'ngs_position', 'height', 'weight', 'headshot', 'college_name', 'college_conference', 'jersey_number', 'rookie_season', 'last_season', 'latest_team', 'status', 'ngs_status', 'ngs_status_short_description', 'years_of_experience', 'pff_position', 'pff_status', 'draft_year', 'draft_round', 'draft_pick', 'draft_team']
+2025-08-24 09:39:48,531 - __main__ - INFO - Sample players:
+2025-08-24 09:39:48,531 - __main__ - INFO -   - Isaako Aaitui (NT)
+2025-08-24 09:39:48,531 - __main__ - INFO -   - Israel Abanikanda (RB)
+2025-08-24 09:39:48,531 - __main__ - INFO -   - Jon Abbate (LB)
+2025-08-24 09:39:48,531 - __main__ - INFO - Loading seasonal roster data (sample)...
+2025-08-24 09:39:48,767 - __main__ - INFO - Seasonal rosters data loaded: 3089 records
+2025-08-24 09:39:48,767 - __main__ - INFO - Rosters columns: ['season', 'team', 'position', 'depth_chart_position', 'jersey_number', 'status', 'player_name', 'first_name', 'last_name', 'birth_date', 'height', 'weight', 'college', 'player_id', 'espn_id', 'sportradar_id', 'yahoo_id', 'rotowire_id', 'pff_id', 'pfr_id', 'fantasy_data_id', 'sleeper_id', 'years_exp', 'headshot_url', 'ngs_position', 'week', 'game_type', 'status_description_abbr', 'football_name', 'esb_id', 'gsis_it_id', 'smart_id', 'entry_year', 'rookie_year', 'draft_club', 'draft_number', 'age']
+2025-08-24 09:39:48,767 - __main__ - INFO - Loading combine data (sample)...
+2025-08-24 09:39:48,989 - __main__ - INFO - Combine data loaded: 319 records
+2025-08-24 09:39:48,989 - __main__ - INFO - Combine columns: ['season', 'draft_year', 'draft_team', 'draft_round', 'draft_ovr', 'pfr_id', 'cfb_id', 'player_name', 'pos', 'school', 'ht', 'wt', 'forty', 'bench', 'vertical', 'broad_jump', 'cone', 'shuttle']
+2025-08-24 09:39:48,989 - __main__ - INFO - Loading draft picks (sample)...
+2025-08-24 09:39:49,225 - __main__ - INFO - Draft data loaded: 259 records
+2025-08-24 09:39:49,225 - __main__ - INFO - Draft columns: ['season', 'round', 'pick', 'team', 'gsis_id', 'pfr_player_id', 'cfb_player_id', 'pfr_player_name', 'hof', 'position', 'category', 'side', 'college', 'age', 'to', 'allpro', 'probowls', 'seasons_started', 'w_av', 'car_av', 'dr_av', 'games', 'pass_completions', 'pass_attempts', 'pass_yards', 'pass_tds', 'pass_ints', 'rush_atts', 'rush_yards', 'rush_tds', 'receptions', 'rec_yards', 'rec_tds', 'def_solo_tackles', 'def_ints', 'def_sacks']
+2025-08-24 09:39:49,226 - __main__ - INFO - ✅ nflverse-data connection test successful!
+2025-08-24 09:39:49,233 - __main__ - INFO - Building FULL enhanced player index (complete historical dataset)...
+2025-08-24 09:39:49,233 - __main__ - INFO - Loading players data...
+2025-08-24 09:39:49,489 - __main__ - INFO - Loaded 24534 total players
+2025-08-24 09:39:49,489 - __main__ - INFO - Loading complete seasonal data (1970-2023)...
+2025-08-24 09:39:49,489 - __main__ - WARNING - Failed to load from 1970, falling back to 1999: Data not available before 1999.
+2025-08-24 09:39:54,163 - __main__ - INFO - Loaded 14495 regular season records
+2025-08-24 09:39:54,163 - __main__ - INFO - Loading complete playoff data (1970-2023)...
+2025-08-24 09:39:54,163 - __main__ - WARNING - Failed to load playoff data from 1970, falling back to 1999: Data not available before 1999.
+2025-08-24 09:39:58,774 - __main__ - INFO - Loaded 3211 playoff records
+2025-08-24 09:39:58,775 - __main__ - INFO - Loading complete draft data (1970+)...
+2025-08-24 09:39:58,961 - __main__ - INFO - Loaded 12156 draft records
+2025-08-24 09:39:58,961 - __main__ - INFO - Loading complete combine data...
+2025-08-24 09:39:59,133 - __main__ - INFO - Loaded 7999 combine records
+2025-08-24 09:39:59,133 - __main__ - INFO - Aggregating career statistics...
+2025-08-24 09:39:59,139 - __main__ - INFO - Aggregating playoff statistics...
+2025-08-24 09:39:59,141 - __main__ - INFO - Merging player identity and career data...
+2025-08-24 09:39:59,150 - __main__ - INFO - Merging playoff data...
+2025-08-24 09:39:59,167 - __main__ - INFO - Merging draft/honors data...
+2025-08-24 09:39:59,192 - __main__ - INFO - Merging combine/physical data...
+2025-08-24 09:39:59,210 - __main__ - INFO - Building enhanced output schema...
+2025-08-24 09:39:59,215 - __main__ - INFO - Calculating playoff performance bonus...
+2025-08-24 09:39:59,217 - __main__ - INFO - Filtering for players with career data (includes quality linemen)...
+2025-08-24 09:39:59,217 - __main__ - INFO - Calculating position-specific scores for all positions...
+2025-08-24 09:39:59,336 - __main__ - ERROR - Error building enhanced index: cannot access local variable 'defensive_positions' where it is not associated with a value
+2025-08-24 09:39:59,337 - __main__ - ERROR - Full traceback: Traceback (most recent call last):
+  File "/Users/paytondennis/Documents/Code/legends/scripts/build_players_index.py", line 678, in build_sample_index
+    def_mask = final_index['primary_pos'].isin(defensive_positions)
+                                               ^^^^^^^^^^^^^^^^^^^
+UnboundLocalError: cannot access local variable 'defensive_positions' where it is not associated with a value
+
+2025-08-24 09:39:59,343 - __main__ - ERROR - ❌ Failed to build player index
+2025-08-24 09:40:29,129 - __main__ - INFO - === nflverse-data Player Index Builder (FULL BUILD) ===
+2025-08-24 09:40:29,291 - __main__ - INFO - Testing nflverse-data connection...
+2025-08-24 09:40:29,291 - __main__ - INFO - Loading players data (sample)...
+2025-08-24 09:40:29,571 - __main__ - INFO - Players data loaded: 24534 records
+2025-08-24 09:40:29,571 - __main__ - INFO - Players columns: ['gsis_id', 'display_name', 'common_first_name', 'first_name', 'last_name', 'short_name', 'football_name', 'suffix', 'esb_id', 'nfl_id', 'pfr_id', 'pff_id', 'otc_id', 'espn_id', 'smart_id', 'birth_date', 'position_group', 'position', 'ngs_position_group', 'ngs_position', 'height', 'weight', 'headshot', 'college_name', 'college_conference', 'jersey_number', 'rookie_season', 'last_season', 'latest_team', 'status', 'ngs_status', 'ngs_status_short_description', 'years_of_experience', 'pff_position', 'pff_status', 'draft_year', 'draft_round', 'draft_pick', 'draft_team']
+2025-08-24 09:40:29,571 - __main__ - INFO - Sample players:
+2025-08-24 09:40:29,571 - __main__ - INFO -   - Isaako Aaitui (NT)
+2025-08-24 09:40:29,572 - __main__ - INFO -   - Israel Abanikanda (RB)
+2025-08-24 09:40:29,572 - __main__ - INFO -   - Jon Abbate (LB)
+2025-08-24 09:40:29,572 - __main__ - INFO - Loading seasonal roster data (sample)...
+2025-08-24 09:40:29,763 - __main__ - INFO - Seasonal rosters data loaded: 3089 records
+2025-08-24 09:40:29,763 - __main__ - INFO - Rosters columns: ['season', 'team', 'position', 'depth_chart_position', 'jersey_number', 'status', 'player_name', 'first_name', 'last_name', 'birth_date', 'height', 'weight', 'college', 'player_id', 'espn_id', 'sportradar_id', 'yahoo_id', 'rotowire_id', 'pff_id', 'pfr_id', 'fantasy_data_id', 'sleeper_id', 'years_exp', 'headshot_url', 'ngs_position', 'week', 'game_type', 'status_description_abbr', 'football_name', 'esb_id', 'gsis_it_id', 'smart_id', 'entry_year', 'rookie_year', 'draft_club', 'draft_number', 'age']
+2025-08-24 09:40:29,764 - __main__ - INFO - Loading combine data (sample)...
+2025-08-24 09:40:29,932 - __main__ - INFO - Combine data loaded: 319 records
+2025-08-24 09:40:29,932 - __main__ - INFO - Combine columns: ['season', 'draft_year', 'draft_team', 'draft_round', 'draft_ovr', 'pfr_id', 'cfb_id', 'player_name', 'pos', 'school', 'ht', 'wt', 'forty', 'bench', 'vertical', 'broad_jump', 'cone', 'shuttle']
+2025-08-24 09:40:29,932 - __main__ - INFO - Loading draft picks (sample)...
+2025-08-24 09:40:30,115 - __main__ - INFO - Draft data loaded: 259 records
+2025-08-24 09:40:30,115 - __main__ - INFO - Draft columns: ['season', 'round', 'pick', 'team', 'gsis_id', 'pfr_player_id', 'cfb_player_id', 'pfr_player_name', 'hof', 'position', 'category', 'side', 'college', 'age', 'to', 'allpro', 'probowls', 'seasons_started', 'w_av', 'car_av', 'dr_av', 'games', 'pass_completions', 'pass_attempts', 'pass_yards', 'pass_tds', 'pass_ints', 'rush_atts', 'rush_yards', 'rush_tds', 'receptions', 'rec_yards', 'rec_tds', 'def_solo_tackles', 'def_ints', 'def_sacks']
+2025-08-24 09:40:30,115 - __main__ - INFO - ✅ nflverse-data connection test successful!
+2025-08-24 09:40:30,119 - __main__ - INFO - Building FULL enhanced player index (complete historical dataset)...
+2025-08-24 09:40:30,119 - __main__ - INFO - Loading players data...
+2025-08-24 09:40:30,378 - __main__ - INFO - Loaded 24534 total players
+2025-08-24 09:40:30,378 - __main__ - INFO - Loading complete seasonal data (1970-2023)...
+2025-08-24 09:40:30,378 - __main__ - WARNING - Failed to load from 1970, falling back to 1999: Data not available before 1999.
+2025-08-24 09:40:34,974 - __main__ - INFO - Loaded 14495 regular season records
+2025-08-24 09:40:34,974 - __main__ - INFO - Loading complete playoff data (1970-2023)...
+2025-08-24 09:40:34,974 - __main__ - WARNING - Failed to load playoff data from 1970, falling back to 1999: Data not available before 1999.
+2025-08-24 09:40:39,409 - __main__ - INFO - Loaded 3211 playoff records
+2025-08-24 09:40:39,410 - __main__ - INFO - Loading complete draft data (1970+)...
+2025-08-24 09:40:39,604 - __main__ - INFO - Loaded 12156 draft records
+2025-08-24 09:40:39,604 - __main__ - INFO - Loading complete combine data...
+2025-08-24 09:40:39,822 - __main__ - INFO - Loaded 7999 combine records
+2025-08-24 09:40:39,822 - __main__ - INFO - Aggregating career statistics...
+2025-08-24 09:40:39,831 - __main__ - INFO - Aggregating playoff statistics...
+2025-08-24 09:40:39,834 - __main__ - INFO - Merging player identity and career data...
+2025-08-24 09:40:39,845 - __main__ - INFO - Merging playoff data...
+2025-08-24 09:40:39,864 - __main__ - INFO - Merging draft/honors data...
+2025-08-24 09:40:39,888 - __main__ - INFO - Merging combine/physical data...
+2025-08-24 09:40:39,905 - __main__ - INFO - Building enhanced output schema...
+2025-08-24 09:40:39,911 - __main__ - INFO - Calculating playoff performance bonus...
+2025-08-24 09:40:39,912 - __main__ - INFO - Filtering for players with career data (includes quality linemen)...
+2025-08-24 09:40:39,912 - __main__ - INFO - Calculating position-specific scores for all positions...
+2025-08-24 09:40:40,163 - __main__ - INFO - Applying enhanced filtering for all position types...
+2025-08-24 09:40:40,234 - __main__ - INFO - Enhanced player index saved: 16413 players → test_position_scores.csv
+2025-08-24 09:40:40,234 - __main__ - INFO - Sample entries with enhanced schema:
+2025-08-24 09:40:40,234 - __main__ - INFO -   - Isaako Aaitui (NT): 0 seasons, 0 games, 0 TDs, 0 Pro Bowls | Playoffs: 0 games, 0 TDs (bonus: 0.0) | 76.0", 307.0lb, 40yd: N/A | Position Score: 8.0
+2025-08-24 09:40:40,234 - __main__ - INFO -   - Israel Abanikanda (RB): 1 seasons, 6 games, 0 TDs, 0 Pro Bowls | Playoffs: 0 games, 0 TDs (bonus: 0.0) | 70.0", 216.0lb, 40yd: N/A | Position Score: 0.1
+2025-08-24 09:40:40,234 - __main__ - INFO -   - Jared Abbrederis (WR): 3 seasons, 9 games, 0 TDs, 0 Pro Bowls | Playoffs: 2 games, 0 TDs (bonus: 5.0) | 73.0", 195.0lb, 40yd: 4.5s | Position Score: 0.3
+2025-08-24 09:40:40,234 - __main__ - INFO -   - Isa Abdul-Quddus (S): 2 seasons, 3 games, 0 TDs, 0 Pro Bowls | Playoffs: 0 games, 0 TDs (bonus: 0.0) | 73.0", 196.0lb, 40yd: N/A | Position Score: 0.0
+2025-08-24 09:40:40,234 - __main__ - INFO -   - Ameer Abdullah (RB): 9 seasons, 97 games, 14 TDs, 0 Pro Bowls | Playoffs: 2 games, 0 TDs (bonus: 5.0) | 69.0", 203.0lb, 40yd: 4.6s | Position Score: 14.4
+2025-08-24 09:40:40,234 - __main__ - INFO - Enhanced index summary:
+2025-08-24 09:40:40,234 - __main__ - INFO -   Total players: 16,413
+2025-08-24 09:40:40,235 - __main__ - INFO -   With >10 games: 3,389
+2025-08-24 09:40:40,235 - __main__ - INFO -   With Pro Bowls: 458
+2025-08-24 09:40:40,236 - __main__ - INFO -   With TDs: 2,437
+2025-08-24 09:40:40,236 - __main__ - INFO -   With playoff experience: 1,504
+2025-08-24 09:40:40,236 - __main__ - INFO -   With playoff TDs: 662
+2025-08-24 09:40:40,236 - __main__ - INFO -   With high playoff bonus (>10): 95
+2025-08-24 09:40:40,237 - __main__ - INFO -   With combine data: 5,323
+2025-08-24 09:40:40,237 - __main__ - INFO -   Hall of Fame: 8
+2025-08-24 09:40:40,237 - __main__ - INFO -   === POSITION SCORE ANALYSIS ===
+2025-08-24 09:40:40,237 - __main__ - INFO -   Players with score >50: 1,478
+2025-08-24 09:40:40,237 - __main__ - INFO -   Elite players (score >80): 339
+2025-08-24 09:40:40,237 - __main__ - INFO -   Legendary players (score >100): 79
+2025-08-24 09:40:40,237 - __main__ - INFO -   Top scorers by position:
+2025-08-24 09:40:40,238 - __main__ - INFO -     QB: Peyton Manning (258.0)
+2025-08-24 09:40:40,238 - __main__ - INFO -     RB: LaDainian Tomlinson (130.4)
+2025-08-24 09:40:40,239 - __main__ - INFO -     WR: Randy Moss (138.9)
+2025-08-24 09:40:40,239 - __main__ - INFO -     TE: Tony Gonzalez (157.2)
+2025-08-24 09:40:40,239 - __main__ - INFO -     DE: Julius Peppers (156.0)
+2025-08-24 09:40:40,240 - __main__ - INFO -     DT: Cameron Heyward (143.0)
+2025-08-24 09:40:40,240 - __main__ - INFO -     LB: Jason Pierre-Paul (104.0)
+2025-08-24 09:40:40,241 - __main__ - INFO -     CB: Jalen Ramsey (128.0)
+2025-08-24 09:40:40,241 - __main__ - INFO -     S: Budda Baker (116.0)
+2025-08-24 09:40:40,241 - __main__ - INFO -   === POSITION BREAKDOWN ===
+2025-08-24 09:40:40,241 - __main__ - INFO -     LB: 2,028
+2025-08-24 09:40:40,241 - __main__ - INFO -     DB: 1,815
+2025-08-24 09:40:40,241 - __main__ - INFO -     OT: 1,502
+2025-08-24 09:40:40,241 - __main__ - INFO -     DE: 1,463
+2025-08-24 09:40:40,241 - __main__ - INFO -     G: 1,361
+2025-08-24 09:40:40,241 - __main__ - INFO -     WR: 1,277
+2025-08-24 09:40:40,241 - __main__ - INFO -     DT: 1,186
+2025-08-24 09:40:40,241 - __main__ - INFO -     CB: 1,021
+2025-08-24 09:40:40,241 - __main__ - INFO -     RB: 912
+2025-08-24 09:40:40,242 - __main__ - INFO -     TE: 667
+2025-08-24 09:40:40,242 - __main__ - INFO -     C: 619
+2025-08-24 09:40:40,242 - __main__ - INFO -     OLB: 453
+2025-08-24 09:40:40,242 - __main__ - INFO -     QB: 389
+2025-08-24 09:40:40,242 - __main__ - INFO -     S: 317
+2025-08-24 09:40:40,242 - __main__ - INFO -     FS: 269
+2025-08-24 09:40:40,242 - __main__ - INFO -   === DEFENSIVE PLAYERS ===
+2025-08-24 09:40:40,242 - __main__ - INFO -   Total defensive players: 9,374
+2025-08-24 09:40:40,243 - __main__ - INFO -     LB: 2,028
+2025-08-24 09:40:40,243 - __main__ - INFO -     DB: 1,815
+2025-08-24 09:40:40,243 - __main__ - INFO -     DE: 1,463
+2025-08-24 09:40:40,243 - __main__ - INFO -     DT: 1,186
+2025-08-24 09:40:40,243 - __main__ - INFO -     CB: 1,021
+2025-08-24 09:40:40,243 - __main__ - INFO -     OLB: 453
+2025-08-24 09:40:40,243 - __main__ - INFO -     S: 317
+2025-08-24 09:40:40,243 - __main__ - INFO -     FS: 269
+2025-08-24 09:40:40,243 - __main__ - INFO -     SAF: 257
+2025-08-24 09:40:40,243 - __main__ - INFO -     NT: 210
+2025-08-24 09:40:40,243 - __main__ - INFO -     ILB: 188
+2025-08-24 09:40:40,243 - __main__ - INFO -     MLB: 150
+2025-08-24 09:40:40,243 - __main__ - INFO -     DL: 17
+2025-08-24 09:40:40,244 - __main__ - INFO -   ✅ Defensive line count looks good: 2666
+2025-08-24 09:40:40,245 - __main__ - INFO -   Elite defensive players (score >60): 434
+2025-08-24 09:40:40,245 - __main__ - INFO -   === OFFENSIVE LINEMEN ===
+2025-08-24 09:40:40,245 - __main__ - INFO -   Total linemen: 3,482
+2025-08-24 09:40:40,246 - __main__ - INFO -     OT: 1,502
+2025-08-24 09:40:40,246 - __main__ - INFO -     G: 1,361
+2025-08-24 09:40:40,246 - __main__ - INFO -     C: 619
+2025-08-24 09:40:40,246 - __main__ - INFO -   High-quality linemen (score >50): 720
+2025-08-24 09:40:40,246 - __main__ - INFO -   Elite linemen (score >70): 292
+2025-08-24 09:40:40,246 - __main__ - INFO -   ✅ Target 700+ linemen: ACHIEVED
+2025-08-24 09:40:40,246 - __main__ - INFO - === DATA QUALITY VALIDATION ===
+2025-08-24 09:40:40,247 - __main__ - INFO -   Career year range: 1974 - 2025
+2025-08-24 09:40:40,255 - __main__ - INFO - ✅ Full historical player index built successfully!
+2025-08-24 09:57:55,068 - __main__ - INFO - === nflverse-data Player Index Builder (Test Sample) ===
+2025-08-24 09:57:55,230 - __main__ - INFO - Testing nflverse-data connection...
+2025-08-24 09:57:55,230 - __main__ - INFO - Loading players data (sample)...
+2025-08-24 09:57:55,820 - __main__ - INFO - Players data loaded: 24534 records
+2025-08-24 09:57:55,820 - __main__ - INFO - Players columns: ['gsis_id', 'display_name', 'common_first_name', 'first_name', 'last_name', 'short_name', 'football_name', 'suffix', 'esb_id', 'nfl_id', 'pfr_id', 'pff_id', 'otc_id', 'espn_id', 'smart_id', 'birth_date', 'position_group', 'position', 'ngs_position_group', 'ngs_position', 'height', 'weight', 'headshot', 'college_name', 'college_conference', 'jersey_number', 'rookie_season', 'last_season', 'latest_team', 'status', 'ngs_status', 'ngs_status_short_description', 'years_of_experience', 'pff_position', 'pff_status', 'draft_year', 'draft_round', 'draft_pick', 'draft_team']
+2025-08-24 09:57:55,820 - __main__ - INFO - Sample players:
+2025-08-24 09:57:55,820 - __main__ - INFO -   - Isaako Aaitui (NT)
+2025-08-24 09:57:55,820 - __main__ - INFO -   - Israel Abanikanda (RB)
+2025-08-24 09:57:55,820 - __main__ - INFO -   - Jon Abbate (LB)
+2025-08-24 09:57:55,821 - __main__ - INFO - Loading seasonal roster data (sample)...
+2025-08-24 09:57:56,219 - __main__ - INFO - Seasonal rosters data loaded: 3089 records
+2025-08-24 09:57:56,219 - __main__ - INFO - Rosters columns: ['season', 'team', 'position', 'depth_chart_position', 'jersey_number', 'status', 'player_name', 'first_name', 'last_name', 'birth_date', 'height', 'weight', 'college', 'player_id', 'espn_id', 'sportradar_id', 'yahoo_id', 'rotowire_id', 'pff_id', 'pfr_id', 'fantasy_data_id', 'sleeper_id', 'years_exp', 'headshot_url', 'ngs_position', 'week', 'game_type', 'status_description_abbr', 'football_name', 'esb_id', 'gsis_it_id', 'smart_id', 'entry_year', 'rookie_year', 'draft_club', 'draft_number', 'age']
+2025-08-24 09:57:56,219 - __main__ - INFO - Loading combine data (sample)...
+2025-08-24 09:57:56,614 - __main__ - INFO - Combine data loaded: 319 records
+2025-08-24 09:57:56,614 - __main__ - INFO - Combine columns: ['season', 'draft_year', 'draft_team', 'draft_round', 'draft_ovr', 'pfr_id', 'cfb_id', 'player_name', 'pos', 'school', 'ht', 'wt', 'forty', 'bench', 'vertical', 'broad_jump', 'cone', 'shuttle']
+2025-08-24 09:57:56,614 - __main__ - INFO - Loading draft picks (sample)...
+2025-08-24 09:57:57,011 - __main__ - INFO - Draft data loaded: 259 records
+2025-08-24 09:57:57,012 - __main__ - INFO - Draft columns: ['season', 'round', 'pick', 'team', 'gsis_id', 'pfr_player_id', 'cfb_player_id', 'pfr_player_name', 'hof', 'position', 'category', 'side', 'college', 'age', 'to', 'allpro', 'probowls', 'seasons_started', 'w_av', 'car_av', 'dr_av', 'games', 'pass_completions', 'pass_attempts', 'pass_yards', 'pass_tds', 'pass_ints', 'rush_atts', 'rush_yards', 'rush_tds', 'receptions', 'rec_yards', 'rec_tds', 'def_solo_tackles', 'def_ints', 'def_sacks']
+2025-08-24 09:57:57,012 - __main__ - INFO - ✅ nflverse-data connection test successful!
+2025-08-24 09:57:57,019 - __main__ - INFO - Building comprehensive player index (test scope: recent years only)...
+2025-08-24 09:57:57,019 - __main__ - INFO - Loading players data...
+2025-08-24 09:57:57,274 - __main__ - INFO - Loaded 24534 total players
+2025-08-24 09:57:57,274 - __main__ - INFO - Loading recent seasonal data (2022-2023)...
+2025-08-24 09:57:58,057 - __main__ - INFO - Loaded 1207 regular season records
+2025-08-24 09:57:58,057 - __main__ - INFO - Loading recent playoff data (2022-2023)...
+2025-08-24 09:57:58,430 - __main__ - INFO - Loaded 289 playoff records
+2025-08-24 09:57:58,430 - __main__ - INFO - Loading recent draft data (including historical for testing)...
+2025-08-24 09:57:58,629 - __main__ - INFO - Loaded 12156 draft records
+2025-08-24 09:57:58,629 - __main__ - INFO - Loading combine data...
+2025-08-24 09:57:58,806 - __main__ - INFO - Loaded 1444 combine records
+2025-08-24 09:57:58,806 - __main__ - INFO - Aggregating career statistics...
+2025-08-24 09:57:58,812 - __main__ - INFO - Aggregating playoff statistics...
+2025-08-24 09:57:58,814 - __main__ - INFO - Merging player identity and career data...
+2025-08-24 09:57:58,825 - __main__ - INFO - Merging playoff data...
+2025-08-24 09:57:58,853 - __main__ - INFO - Merging draft/honors data...
+2025-08-24 09:57:58,879 - __main__ - INFO - Merging combine/physical data...
+2025-08-24 09:57:58,895 - __main__ - INFO - Building comprehensive output schema...
+2025-08-24 09:57:58,901 - __main__ - INFO - Filtering for players with career data...
+2025-08-24 09:57:58,901 - __main__ - INFO - Applying inclusive filtering for comprehensive coverage...
+2025-08-24 09:57:58,904 - __main__ - INFO - Comprehensive player index saved: 100 players → data/raw/test_index.csv
+2025-08-24 09:57:58,904 - __main__ - INFO - Sample entries with comprehensive schema:
+2025-08-24 09:57:58,904 - __main__ - INFO -   - Israel Abanikanda (RB): 1 seasons, 6 games, 0 TDs, 0 Pro Bowls | Playoffs: 0 games, 0 TDs | Defense: 0 tackles, 0.0 sacks | 70.0", 216.0lb, 40yd: N/A
+2025-08-24 09:57:58,904 - __main__ - INFO -   - Jared Abbrederis (WR): 0 seasons, 22 games, 0 TDs, 0 Pro Bowls | Playoffs: 0 games, 0 TDs | Defense: 1 tackles, 0.0 sacks | 73.0", 195.0lb, 40yd: N/A
+2025-08-24 09:57:58,904 - __main__ - INFO -   - Ameer Abdullah (RB): 2 seasons, 29 games, 1 TDs, 0 Pro Bowls | Playoffs: 0 games, 0 TDs | Defense: 25 tackles, 0.0 sacks | 69.0", 203.0lb, 40yd: N/A
+2025-08-24 09:57:58,905 - __main__ - INFO -   - Hamza Abdullah (DB): 0 seasons, 0 games, 0 TDs, 0 Pro Bowls | Playoffs: 0 games, 0 TDs | Defense: 0 tackles, 0.0 sacks | 74.0", 216.0lb, 40yd: N/A
+2025-08-24 09:57:58,905 - __main__ - INFO -   - Khalid Abdullah (LB): 0 seasons, 0 games, 0 TDs, 0 Pro Bowls | Playoffs: 0 games, 0 TDs | Defense: 0 tackles, 0.0 sacks | 74.0", 227.0lb, 40yd: N/A
+2025-08-24 09:57:58,905 - __main__ - INFO - Comprehensive index summary:
+2025-08-24 09:57:58,905 - __main__ - INFO -   Total players: 100
+2025-08-24 09:57:58,905 - __main__ - INFO -   With >10 games: 27
+2025-08-24 09:57:58,905 - __main__ - INFO -   With Pro Bowls: 5
+2025-08-24 09:57:58,905 - __main__ - INFO -   With offensive TDs: 13
+2025-08-24 09:57:58,905 - __main__ - INFO -   With playoff experience: 5
+2025-08-24 09:57:58,905 - __main__ - INFO -   With playoff TDs: 2
+2025-08-24 09:57:58,905 - __main__ - INFO -   With defensive stats: 21
+2025-08-24 09:57:58,905 - __main__ - INFO -   With combine data: 10
+2025-08-24 09:57:58,905 - __main__ - INFO -   Hall of Fame: 0
+2025-08-24 09:57:58,905 - __main__ - INFO -   === POSITION BREAKDOWN ===
+2025-08-24 09:57:58,906 - __main__ - INFO -     WR: 13
+2025-08-24 09:57:58,906 - __main__ - INFO -     RB: 12
+2025-08-24 09:57:58,906 - __main__ - INFO -     DB: 12
+2025-08-24 09:57:58,906 - __main__ - INFO -     DT: 12
+2025-08-24 09:57:58,906 - __main__ - INFO -     LB: 10
+2025-08-24 09:57:58,906 - __main__ - INFO -     OT: 8
+2025-08-24 09:57:58,906 - __main__ - INFO -     OLB: 7
+2025-08-24 09:57:58,906 - __main__ - INFO -     CB: 6
+2025-08-24 09:57:58,906 - __main__ - INFO -     G: 4
+2025-08-24 09:57:58,906 - __main__ - INFO -     DE: 3
+2025-08-24 09:57:58,906 - __main__ - INFO -     TE: 3
+2025-08-24 09:57:58,906 - __main__ - INFO -     QB: 3
+2025-08-24 09:57:58,906 - __main__ - INFO -     C: 2
+2025-08-24 09:57:58,906 - __main__ - INFO -     K: 2
+2025-08-24 09:57:58,906 - __main__ - INFO -     NT: 1
+2025-08-24 09:57:58,906 - __main__ - INFO -   === STATS COVERAGE ===
+2025-08-24 09:57:58,906 - __main__ - INFO -   Players with passing yards: 1
+2025-08-24 09:57:58,906 - __main__ - INFO -   Players with rushing yards: 11
+2025-08-24 09:57:58,906 - __main__ - INFO -   Players with receiving yards: 17
+2025-08-24 09:57:58,906 - __main__ - INFO -   Players with tackles: 21
+2025-08-24 09:57:58,906 - __main__ - INFO -   Players with sacks: 6
+2025-08-24 09:57:58,906 - __main__ - INFO -   Players with interceptions: 7
+2025-08-24 09:57:58,906 - __main__ - INFO - === DATA QUALITY VALIDATION ===
+2025-08-24 09:57:58,906 - __main__ - INFO -   ✅ All players have names
+2025-08-24 09:57:58,906 - __main__ - INFO -   ✅ All players have positions
+2025-08-24 09:57:58,907 - __main__ - INFO -   Career year range: 1974 - 2025
+2025-08-24 09:57:58,907 - __main__ - INFO - ✅ Comprehensive player index built successfully!
+2025-08-24 09:57:58,912 - __main__ - INFO - ✅ Sample comprehensive player index built successfully!
+2025-08-24 09:59:38,781 - __main__ - INFO - === nflverse-data Player Index Builder (FULL BUILD) ===
+2025-08-24 09:59:38,944 - __main__ - INFO - Testing nflverse-data connection...
+2025-08-24 09:59:38,944 - __main__ - INFO - Loading players data (sample)...
+2025-08-24 09:59:39,228 - __main__ - INFO - Players data loaded: 24534 records
+2025-08-24 09:59:39,228 - __main__ - INFO - Players columns: ['gsis_id', 'display_name', 'common_first_name', 'first_name', 'last_name', 'short_name', 'football_name', 'suffix', 'esb_id', 'nfl_id', 'pfr_id', 'pff_id', 'otc_id', 'espn_id', 'smart_id', 'birth_date', 'position_group', 'position', 'ngs_position_group', 'ngs_position', 'height', 'weight', 'headshot', 'college_name', 'college_conference', 'jersey_number', 'rookie_season', 'last_season', 'latest_team', 'status', 'ngs_status', 'ngs_status_short_description', 'years_of_experience', 'pff_position', 'pff_status', 'draft_year', 'draft_round', 'draft_pick', 'draft_team']
+2025-08-24 09:59:39,228 - __main__ - INFO - Sample players:
+2025-08-24 09:59:39,229 - __main__ - INFO -   - Isaako Aaitui (NT)
+2025-08-24 09:59:39,229 - __main__ - INFO -   - Israel Abanikanda (RB)
+2025-08-24 09:59:39,229 - __main__ - INFO -   - Jon Abbate (LB)
+2025-08-24 09:59:39,229 - __main__ - INFO - Loading seasonal roster data (sample)...
+2025-08-24 09:59:39,470 - __main__ - INFO - Seasonal rosters data loaded: 3089 records
+2025-08-24 09:59:39,470 - __main__ - INFO - Rosters columns: ['season', 'team', 'position', 'depth_chart_position', 'jersey_number', 'status', 'player_name', 'first_name', 'last_name', 'birth_date', 'height', 'weight', 'college', 'player_id', 'espn_id', 'sportradar_id', 'yahoo_id', 'rotowire_id', 'pff_id', 'pfr_id', 'fantasy_data_id', 'sleeper_id', 'years_exp', 'headshot_url', 'ngs_position', 'week', 'game_type', 'status_description_abbr', 'football_name', 'esb_id', 'gsis_it_id', 'smart_id', 'entry_year', 'rookie_year', 'draft_club', 'draft_number', 'age']
+2025-08-24 09:59:39,470 - __main__ - INFO - Loading combine data (sample)...
+2025-08-24 09:59:39,655 - __main__ - INFO - Combine data loaded: 319 records
+2025-08-24 09:59:39,655 - __main__ - INFO - Combine columns: ['season', 'draft_year', 'draft_team', 'draft_round', 'draft_ovr', 'pfr_id', 'cfb_id', 'player_name', 'pos', 'school', 'ht', 'wt', 'forty', 'bench', 'vertical', 'broad_jump', 'cone', 'shuttle']
+2025-08-24 09:59:39,656 - __main__ - INFO - Loading draft picks (sample)...
+2025-08-24 09:59:39,857 - __main__ - INFO - Draft data loaded: 259 records
+2025-08-24 09:59:39,857 - __main__ - INFO - Draft columns: ['season', 'round', 'pick', 'team', 'gsis_id', 'pfr_player_id', 'cfb_player_id', 'pfr_player_name', 'hof', 'position', 'category', 'side', 'college', 'age', 'to', 'allpro', 'probowls', 'seasons_started', 'w_av', 'car_av', 'dr_av', 'games', 'pass_completions', 'pass_attempts', 'pass_yards', 'pass_tds', 'pass_ints', 'rush_atts', 'rush_yards', 'rush_tds', 'receptions', 'rec_yards', 'rec_tds', 'def_solo_tackles', 'def_ints', 'def_sacks']
+2025-08-24 09:59:39,857 - __main__ - INFO - ✅ nflverse-data connection test successful!
+2025-08-24 09:59:39,862 - __main__ - INFO - Building FULL comprehensive player index (complete historical dataset)...
+2025-08-24 09:59:39,862 - __main__ - INFO - Loading players data...
+2025-08-24 09:59:40,155 - __main__ - INFO - Loaded 24534 total players
+2025-08-24 09:59:40,155 - __main__ - INFO - Loading complete seasonal data (1970-2023)...
+2025-08-24 09:59:40,155 - __main__ - WARNING - Failed to load from 1970, falling back to 1999: Data not available before 1999.
+2025-08-24 09:59:49,751 - __main__ - INFO - Loaded 14495 regular season records
+2025-08-24 09:59:49,751 - __main__ - INFO - Loading complete playoff data (1970-2023)...
+2025-08-24 09:59:49,751 - __main__ - WARNING - Failed to load playoff data from 1970, falling back to 1999: Data not available before 1999.
+2025-08-24 09:59:54,445 - __main__ - INFO - Loaded 3211 playoff records
+2025-08-24 09:59:54,445 - __main__ - INFO - Loading complete draft data (1970+)...
+2025-08-24 09:59:54,625 - __main__ - INFO - Loaded 12156 draft records
+2025-08-24 09:59:54,625 - __main__ - INFO - Loading complete combine data...
+2025-08-24 09:59:54,804 - __main__ - INFO - Loaded 7999 combine records
+2025-08-24 09:59:54,804 - __main__ - INFO - Aggregating career statistics...
+2025-08-24 09:59:54,812 - __main__ - INFO - Aggregating playoff statistics...
+2025-08-24 09:59:54,815 - __main__ - INFO - Merging player identity and career data...
+2025-08-24 09:59:54,825 - __main__ - INFO - Merging playoff data...
+2025-08-24 09:59:54,844 - __main__ - INFO - Merging draft/honors data...
+2025-08-24 09:59:54,869 - __main__ - INFO - Merging combine/physical data...
+2025-08-24 09:59:54,888 - __main__ - INFO - Building comprehensive output schema...
+2025-08-24 09:59:54,894 - __main__ - INFO - Filtering for players with career data...
+2025-08-24 09:59:54,894 - __main__ - INFO - Applying inclusive filtering for comprehensive coverage...
+2025-08-24 09:59:54,948 - __main__ - INFO - Comprehensive player index saved: 13318 players → data/raw/test_full_index.csv
+2025-08-24 09:59:54,948 - __main__ - INFO - Sample entries with comprehensive schema:
+2025-08-24 09:59:54,948 - __main__ - INFO -   - Israel Abanikanda (RB): 1 seasons, 6 games, 0 TDs, 0 Pro Bowls | Playoffs: 0 games, 0 TDs | Defense: 0 tackles, 0.0 sacks | 70.0", 216.0lb, 40yd: N/A
+2025-08-24 09:59:54,948 - __main__ - INFO -   - Jared Abbrederis (WR): 3 seasons, 9 games, 0 TDs, 0 Pro Bowls | Playoffs: 2 games, 0 TDs | Defense: 1 tackles, 0.0 sacks | 73.0", 195.0lb, 40yd: 4.5s
+2025-08-24 09:59:54,948 - __main__ - INFO -   - Isa Abdul-Quddus (S): 2 seasons, 3 games, 0 TDs, 0 Pro Bowls | Playoffs: 0 games, 0 TDs | Defense: 0 tackles, 0.0 sacks | 73.0", 196.0lb, 40yd: N/A
+2025-08-24 09:59:54,949 - __main__ - INFO -   - Ameer Abdullah (RB): 9 seasons, 97 games, 14 TDs, 0 Pro Bowls | Playoffs: 2 games, 0 TDs | Defense: 25 tackles, 0.0 sacks | 69.0", 203.0lb, 40yd: 4.6s
+2025-08-24 09:59:54,949 - __main__ - INFO -   - Hamza Abdullah (DB): 0 seasons, 0 games, 0 TDs, 0 Pro Bowls | Playoffs: 0 games, 0 TDs | Defense: 0 tackles, 0.0 sacks | 74.0", 216.0lb, 40yd: N/A
+2025-08-24 09:59:54,949 - __main__ - INFO - Comprehensive index summary:
+2025-08-24 09:59:54,949 - __main__ - INFO -   Total players: 13,318
+2025-08-24 09:59:54,949 - __main__ - INFO -   With >10 games: 3,389
+2025-08-24 09:59:54,949 - __main__ - INFO -   With Pro Bowls: 458
+2025-08-24 09:59:54,949 - __main__ - INFO -   With offensive TDs: 2,437
+2025-08-24 09:59:54,950 - __main__ - INFO -   With playoff experience: 1,499
+2025-08-24 09:59:54,950 - __main__ - INFO -   With playoff TDs: 661
+2025-08-24 09:59:54,950 - __main__ - INFO -   With defensive stats: 2,036
+2025-08-24 09:59:54,950 - __main__ - INFO -   With combine data: 4,935
+2025-08-24 09:59:54,950 - __main__ - INFO -   Hall of Fame: 8
+2025-08-24 09:59:54,950 - __main__ - INFO -   === POSITION BREAKDOWN ===
+2025-08-24 09:59:54,951 - __main__ - INFO -     WR: 1,892
+2025-08-24 09:59:54,951 - __main__ - INFO -     RB: 1,546
+2025-08-24 09:59:54,951 - __main__ - INFO -     LB: 1,183
+2025-08-24 09:59:54,951 - __main__ - INFO -     DB: 1,012
+2025-08-24 09:59:54,951 - __main__ - INFO -     TE: 955
+2025-08-24 09:59:54,951 - __main__ - INFO -     DE: 945
+2025-08-24 09:59:54,951 - __main__ - INFO -     OT: 829
+2025-08-24 09:59:54,951 - __main__ - INFO -     G: 787
+2025-08-24 09:59:54,951 - __main__ - INFO -     DT: 737
+2025-08-24 09:59:54,951 - __main__ - INFO -     CB: 669
+2025-08-24 09:59:54,951 - __main__ - INFO -     QB: 622
+2025-08-24 09:59:54,951 - __main__ - INFO -     C: 345
+2025-08-24 09:59:54,951 - __main__ - INFO -     OLB: 329
+2025-08-24 09:59:54,951 - __main__ - INFO -     S: 238
+2025-08-24 09:59:54,951 - __main__ - INFO -     FS: 198
+2025-08-24 09:59:54,951 - __main__ - INFO -   === STATS COVERAGE ===
+2025-08-24 09:59:54,951 - __main__ - INFO -   Players with passing yards: 596
+2025-08-24 09:59:54,951 - __main__ - INFO -   Players with rushing yards: 2,143
+2025-08-24 09:59:54,952 - __main__ - INFO -   Players with receiving yards: 2,980
+2025-08-24 09:59:54,952 - __main__ - INFO -   Players with tackles: 2,033
+2025-08-24 09:59:54,952 - __main__ - INFO -   Players with sacks: 932
+2025-08-24 09:59:54,952 - __main__ - INFO -   Players with interceptions: 688
+2025-08-24 09:59:54,952 - __main__ - INFO - === DATA QUALITY VALIDATION ===
+2025-08-24 09:59:54,952 - __main__ - INFO -   ✅ All players have names
+2025-08-24 09:59:54,952 - __main__ - INFO -   ✅ All players have positions
+2025-08-24 09:59:54,952 - __main__ - INFO -   Career year range: 1974 - 2025
+2025-08-24 09:59:54,952 - __main__ - INFO - ✅ Comprehensive player index built successfully!
+2025-08-24 09:59:54,960 - __main__ - INFO - ✅ Full comprehensive player index built successfully!
