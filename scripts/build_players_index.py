@@ -22,33 +22,32 @@ Data Sources Available (nfl-data-py capabilities confirmed):
   * Career stat summaries included
 - import_seasonal_rosters(): Team affiliations by season
 
-Legend Filtering Strategy for Milestone 3:
-- total_career_games: Sum 'games' across all seasons (>32 games filter)
-- career_achievement: Career yards/TDs aggregated from seasonal data
-- honors: probowls + allpro + hof from draft data  
-- peak_performance: Best 3-year windows from seasonal stats
-- career_span: Actual years active (last_season - rookie_season + 1)
+Player Index Output Design:
+- Provides comprehensive data for downstream legend filtering (see design.md)
+- Multi-dataset aggregation: players + seasonal_data + draft_picks + rosters
+- Career-span calculations using actual rookie_season/last_season (not placeholders)
+- Position-agnostic data collection suitable for all NFL positions
 
 Current Implementation: Proof-of-concept with 2023 active players only
 Next Phase: Full historical aggregation across all available seasons (2000+)
 
 Enhanced Output Schema (data/raw/players_index.csv):
-- player_id (nflverse gsis_id) 
-- full_name, primary_pos, college, birth_date
-- career_span: first_year, last_year (actual, not placeholder)
-- legend_metrics: total_career_games, career_passing_yards, career_rushing_yards, 
-  career_receiving_yards, career_tds, pro_bowls, all_pros, hof_flag
-- peak_season_score, position_rank_score (for Milestone 3 filtering)
+- player_id (nflverse gsis_id), full_name, primary_pos, college, birth_date
+- career_span: first_year, last_year, career_seasons, total_career_games
+- tier1_stats: career_passing_yards, career_rushing_yards, career_receiving_yards, career_tds
+- tier2_stats: def_solo_tackles, def_sacks, def_ints, draft_pick  
+- tier3_stats: games_started, team_changes (longevity indicators)
+- tier4_stats: seasons_as_specialist, team_tenure_count
+- honors: pro_bowls, all_pros, hof_flag
+- legend_scores: peak_season_score, position_tier_score, overall_legend_score
 
 Data Quality: ~27k total players → filter to ~8-10k legend candidates
 """
 
 import logging
 from pathlib import Path
-from typing import Optional
 
 import click
-import pandas as pd
 
 
 def setup_logging(verbose: bool = False) -> logging.Logger:

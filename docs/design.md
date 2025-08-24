@@ -89,11 +89,33 @@ Every rating follows a **4-step pipeline**:
 
 ## 6. Ranking & Selection
 
-### 6.1 Player Pool Rules
+### 6.1 Player Pool Rules (Legend Qualification Paths)
 
-* ≥ 32 career games or ≥ 1 full-time starter season.
-* Top-X peak seasons for short careers (e.g., Gale Sayers).
-* Specialists (K/P/RET) get dedicated quotas.
+**THREE LEGEND QUALIFICATION PATHS (any path qualifies):**
+
+**PATH 1 - PEAK DOMINANCE** (addresses short amazing careers):
+- ≥3 Pro Bowls in ≤8 seasons (high peer recognition rate)
+  * Examples: Quenton Nelson (7 PB/7 seasons), Andrew Luck (4 PB/7 seasons)
+- OR ≥1 All-Pro selection in any span (top 1% at position)
+- OR Hall of Fame flag (automatic legend status)
+- Minimum: >32 total games (injury/early retirement protection)
+
+**PATH 2 - SUSTAINED EXCELLENCE** (longevity + recognition):
+- ≥12 seasons + ≥1 Pro Bowl (durability + peer recognition)
+  * Examples: Andy Lee (19 seasons/3 PB), Duane Brown (16 seasons/5 PB)
+- OR ≥15 seasons regardless of honors (pure longevity value)
+  * Examples: Morten Andersen (26 seasons), Sebastian Janikowski (19 seasons)
+
+**PATH 3 - POSITIONAL IMPACT** (high investment + performance):
+- Draft pick ≤10 + ≥8 seasons active (early investment + durability)
+- OR Top-5 position in career stats + ≥6 seasons (statistical dominance)
+- OR Team continuity: same team ≥10 seasons + playoff appearances
+
+**IMPLEMENTATION NOTES:**
+- All criteria work for any position (OL, specialists, defense, offense)
+- No subjective "clutch" metrics - only measurable peer/organizational recognition  
+- Era-neutral: Pro Bowls are relative to contemporaries in each season
+- Handles both short peaks (Path 1) and long careers (Path 2) objectively
 
 ### 6.2 Peak vs Career Scoring
 
