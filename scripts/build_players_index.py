@@ -13,14 +13,44 @@ LEGEND IDENTIFICATION RESEARCH FINDINGS:
 
 Data Sources Available (nfl-data-py capabilities confirmed):
 - import_players(): Biographical data + career spans (rookie_season, last_season) 
-  * Historical coverage: 1975+ for legends (Brady, Rice, Montana confirmed)
+  * Historical coverage: 1974+ for legends (Brady, Rice, Montana confirmed)
 - import_seasonal_data(): Season-by-season statistics with 'games' column
-  * Coverage: 2000-2023+ confirmed, ~580 players/year in recent seasons
+  * Coverage: 1999-2023+ confirmed, ~580 players/year in recent seasons
   * Stats: passing_yards, rushing_yards, receiving_yards, TDs, advanced metrics
 - import_draft_picks(): Draft history + honors data  
   * probowls, allpro, hof columns for legend identification
   * Career stat summaries included
 - import_seasonal_rosters(): Team affiliations by season
+
+HISTORICAL COVERAGE LIMITATION:
+===============================
+
+**MISSING EARLY LEGENDS (Pre-1974):**
+Current nflverse data does NOT include legendary players from NFL's early eras:
+- Jim Thorpe (1915-1928) - Pro Football Hall of Fame, first NFL president
+- Red Grange (1925-1934) - "The Galloping Ghost," brought legitimacy to pro football  
+- Sammy Baugh (1937-1952) - Revolutionary passer, punter, defensive back
+- Otto Graham (1946-1955) - Browns dynasty quarterback, 7 championship games
+- Jim Brown (1957-1965) - Arguably greatest RB ever, 9 seasons/8 rushing titles
+- Johnny Unitas (1956-1973) - "Johnny U," passing pioneer
+- Gale Sayers (1965-1971) - "Kansas Comet," electric runner cut short by injury
+- Dick Butkus (1965-1973) - Prototype middle linebacker
+- Joe Namath (1965-1977) - Super Bowl III guarantee, cultural icon
+- Roger Staubach (1969-1979) - "Captain America," clutch performer (at data boundary)
+
+**PLANNED HYBRID APPROACH:**
+Phase 1 (Current): Modern Era Legends (1974+) via nflverse data
+Phase 2 (Future): Historical Legends Supplement (Pre-1974) via:
+- AI/LLM curation of canonical early legends lists
+- Manual research of Hall of Fame inductees by era
+- Integration with Pro Football Reference historical data
+- Estimated ~200-300 additional legendary players from early eras
+
+**IMPACT ON MILESTONE 3:**
+- Legend filtering will initially work on ~24k modern players (1974+)  
+- Historical legends will be added as separate curated dataset
+- Final "All-Time Legends Roster" will merge both modern + historical data
+- Clear provenance tracking for data source (nflverse vs curated historical)
 
 Player Index Output Design:
 - Provides comprehensive data for downstream legend filtering (see design.md)
@@ -39,7 +69,10 @@ Enhanced Output Schema (data/raw/players_index.csv):
 - honors: pro_bowls, all_pros, hof_flag
 - physical: height_in, weight_lb, forty_time, bench_press, vertical_jump, broad_jump, three_cone, twenty_shuttle
 
-Data Quality: ~27k total players → filter to ~8-10k legend candidates
+Data Quality: 
+- Modern Era (1974+): ~24k players → filter to ~6-8k modern legend candidates
+- Historical Era (Pre-1974): ~200-300 curated legendary players (future supplement)
+- Combined All-Time: ~24-25k total → ~6-8k final legend candidates
 """
 
 import logging
