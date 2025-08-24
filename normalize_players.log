@@ -1,0 +1,178 @@
+2025-08-23 22:42:10,392 - __main__ - INFO - === Milestone 3: NFL Legend Candidate Filtering ===
+2025-08-23 22:42:10,392 - __main__ - INFO - 🔍 DRY RUN MODE - No files will be modified
+2025-08-23 22:42:10,392 - __main__ - INFO - 🧪 BATCH MODE - Processing first 500 players only
+2025-08-23 22:42:10,392 - __main__ - INFO - Loading main player dataset: data/raw/players_index_full.csv
+2025-08-23 22:42:10,402 - __main__ - INFO - Loaded 5,285 modern players (1974+)
+2025-08-23 22:42:10,402 - __main__ - INFO - Loading historical legends: data/raw/historical_legends_pre1974.csv
+2025-08-23 22:42:10,403 - __main__ - INFO - Loaded 56 pre-1974 Hall of Fame legends
+2025-08-23 22:42:10,403 - __main__ - INFO - Combining modern and historical datasets...
+2025-08-23 22:42:10,404 - __main__ - INFO - Combined dataset: 5,341 total players
+2025-08-23 22:42:10,404 - __main__ - INFO - Applying batch processing: using first 500 players for testing
+2025-08-23 22:42:10,404 - __main__ - INFO - Starting normalization pipeline...
+2025-08-23 22:42:10,404 - __main__ - INFO - Cleaning player names...
+2025-08-23 22:42:10,407 - __main__ - DEBUG - Name changes made: 16
+2025-08-23 22:42:10,408 - __main__ - DEBUG -   'McTelvin Agim' → 'Mctelvin Agim'
+2025-08-23 22:42:10,408 - __main__ - DEBUG -   'D.J. Alexander' → 'DJ Alexander'
+2025-08-23 22:42:10,408 - __main__ - DEBUG -   'C.J. Anderson' → 'CJ Anderson'
+2025-08-23 22:42:10,408 - __main__ - DEBUG -   'J.J. Arcega-Whiteside' → 'JJ Arcega-Whiteside'
+2025-08-23 22:42:10,408 - __main__ - DEBUG -   'J.J. Arrington' → 'JJ Arrington'
+2025-08-23 22:42:10,408 - __main__ - DEBUG -   'Brian Asamoah II' → 'Brian Asamoah Ii'
+2025-08-23 22:42:10,408 - __main__ - DEBUG -   'B.J. Askew' → 'BJ Askew'
+2025-08-23 22:42:10,408 - __main__ - DEBUG -   'Calvin Austin III' → 'Calvin Austin Iii'
+2025-08-23 22:42:10,408 - __main__ - DEBUG -   'DeMarcus Ayers' → 'Demarcus Ayers'
+2025-08-23 22:42:10,408 - __main__ - DEBUG -   'C.J. Beathard' → 'CJ Beathard'
+2025-08-23 22:42:10,408 - __main__ - INFO - Name cleaning complete: 16 names standardized
+2025-08-23 22:42:10,408 - __main__ - INFO - Harmonizing positions...
+2025-08-23 22:42:10,409 - __main__ - WARNING - Unmapped positions found: {'SAF': np.int64(4)}
+2025-08-23 22:42:10,410 - __main__ - INFO - Position harmonization results:
+2025-08-23 22:42:10,410 - __main__ - INFO -   WR: 119 players
+2025-08-23 22:42:10,410 - __main__ - INFO -   RB: 105 players
+2025-08-23 22:42:10,410 - __main__ - INFO -   DB: 71 players
+2025-08-23 22:42:10,410 - __main__ - INFO -   LB: 58 players
+2025-08-23 22:42:10,410 - __main__ - INFO -   TE: 49 players
+2025-08-23 22:42:10,410 - __main__ - INFO -   DL: 34 players
+2025-08-23 22:42:10,410 - __main__ - INFO -   QB: 30 players
+2025-08-23 22:42:10,410 - __main__ - INFO -   P: 14 players
+2025-08-23 22:42:10,410 - __main__ - INFO -   OL: 12 players
+2025-08-23 22:42:10,410 - __main__ - INFO -   K: 4 players
+2025-08-23 22:42:10,410 - __main__ - INFO -   SAF: 4 players
+2025-08-23 22:42:10,410 - __main__ - INFO - Position harmonization complete: 21 → 11 categories
+2025-08-23 22:42:10,410 - __main__ - INFO - Adding era buckets...
+2025-08-23 22:42:10,411 - __main__ - INFO - Era distribution:
+2025-08-23 22:42:10,411 - __main__ - INFO -   1980s: 4 players
+2025-08-23 22:42:10,411 - __main__ - INFO -   1990s: 69 players
+2025-08-23 22:42:10,411 - __main__ - INFO -   2000s: 116 players
+2025-08-23 22:42:10,411 - __main__ - INFO -   2010s: 230 players
+2025-08-23 22:42:10,411 - __main__ - INFO -   2020s: 81 players
+2025-08-23 22:42:10,411 - __main__ - INFO - Era bucketing complete
+2025-08-23 22:42:10,411 - __main__ - INFO - Applying legend filtering criteria with position quota guarantees...
+2025-08-23 22:42:10,415 - __main__ - INFO - Basic filters: 234/500 players pass (46.8%)
+2025-08-23 22:42:10,415 - __main__ - INFO - Applying position-based selection with quotas:
+2025-08-23 22:42:10,415 - __main__ - INFO -   QB: Taking all 17 available players (quota: 200)
+2025-08-23 22:42:10,415 - __main__ - INFO -   RB: Taking all 67 available players (quota: 450)
+2025-08-23 22:42:10,415 - __main__ - INFO -   WR: Taking all 64 available players (quota: 600)
+2025-08-23 22:42:10,416 - __main__ - INFO -   TE: Taking all 27 available players (quota: 250)
+2025-08-23 22:42:10,416 - __main__ - WARNING -   OL: No players found after basic filtering!
+2025-08-23 22:42:10,416 - __main__ - INFO -   DL: Taking all 15 available players (quota: 600)
+2025-08-23 22:42:10,417 - __main__ - INFO -   LB: Taking all 16 available players (quota: 450)
+2025-08-23 22:42:10,417 - __main__ - INFO -   DB: Taking all 24 available players (quota: 700)
+2025-08-23 22:42:10,417 - __main__ - INFO -   K: Taking all 1 available players (quota: 120)
+2025-08-23 22:42:10,417 - __main__ - INFO -   P: Taking all 2 available players (quota: 60)
+2025-08-23 22:42:10,417 - __main__ - WARNING -   ST: No players found after basic filtering!
+2025-08-23 22:42:10,417 - __main__ - INFO - Final position distribution:
+2025-08-23 22:42:10,417 - __main__ - INFO -   RB: 67 players (quota: 450)
+2025-08-23 22:42:10,418 - __main__ - INFO -   WR: 64 players (quota: 600)
+2025-08-23 22:42:10,418 - __main__ - INFO -   TE: 27 players (quota: 250)
+2025-08-23 22:42:10,418 - __main__ - INFO -   DB: 24 players (quota: 700)
+2025-08-23 22:42:10,418 - __main__ - INFO -   QB: 17 players (quota: 200)
+2025-08-23 22:42:10,418 - __main__ - INFO -   LB: 16 players (quota: 450)
+2025-08-23 22:42:10,418 - __main__ - INFO -   DL: 15 players (quota: 600)
+2025-08-23 22:42:10,418 - __main__ - INFO -   P: 2 players (quota: 60)
+2025-08-23 22:42:10,418 - __main__ - INFO -   K: 1 players (quota: 120)
+2025-08-23 22:42:10,418 - __main__ - INFO - Era distribution:
+2025-08-23 22:42:10,418 - __main__ - INFO -   1980s: 2 players
+2025-08-23 22:42:10,418 - __main__ - INFO -   1990s: 31 players
+2025-08-23 22:42:10,418 - __main__ - INFO -   2000s: 57 players
+2025-08-23 22:42:10,418 - __main__ - INFO -   2010s: 120 players
+2025-08-23 22:42:10,418 - __main__ - INFO -   2020s: 23 players
+2025-08-23 22:42:10,418 - __main__ - INFO - Total selected: 233 players
+2025-08-23 22:42:10,418 - __main__ - INFO - Position-quota filtering complete: 233/500 players selected (46.6%)
+2025-08-23 22:42:10,418 - __main__ - INFO - [DRY RUN] Would save snapshot to: data/snapshots/2025-08-23
+2025-08-23 22:42:10,418 - __main__ - INFO - [DRY RUN] Would save 233 players to players.parquet
+2025-08-23 22:42:10,418 - __main__ - INFO - === Normalization Pipeline Complete ===
+2025-08-23 22:42:10,418 - __main__ - INFO - Input: 500 players
+2025-08-23 22:42:10,418 - __main__ - INFO - Output: 233 legend candidates
+2025-08-23 22:42:10,418 - __main__ - INFO - Retention rate: 46.6%
+2025-08-23 22:42:10,418 - __main__ - INFO - ✅ Milestone 3 complete: Legend candidates ready for ranking pipeline
+2025-08-23 22:43:52,941 - __main__ - INFO - === Milestone 3: NFL Legend Candidate Filtering ===
+2025-08-23 22:43:52,941 - __main__ - INFO - 🔍 DRY RUN MODE - No files will be modified
+2025-08-23 22:43:52,942 - __main__ - INFO - Loading main player dataset: data/raw/players_index_full.csv
+2025-08-23 22:43:52,951 - __main__ - INFO - Loaded 5,285 modern players (1974+)
+2025-08-23 22:43:52,951 - __main__ - INFO - Loading historical legends: data/raw/historical_legends_pre1974.csv
+2025-08-23 22:43:52,952 - __main__ - INFO - Loaded 56 pre-1974 Hall of Fame legends
+2025-08-23 22:43:52,952 - __main__ - INFO - Combining modern and historical datasets...
+2025-08-23 22:43:52,952 - __main__ - INFO - Combined dataset: 5,341 total players
+2025-08-23 22:43:52,952 - __main__ - INFO - Starting normalization pipeline...
+2025-08-23 22:43:52,952 - __main__ - INFO - Cleaning player names...
+2025-08-23 22:43:52,964 - __main__ - DEBUG - Name changes made: 374
+2025-08-23 22:43:52,965 - __main__ - DEBUG -   'McTelvin Agim' → 'Mctelvin Agim'
+2025-08-23 22:43:52,965 - __main__ - DEBUG -   'D.J. Alexander' → 'DJ Alexander'
+2025-08-23 22:43:52,965 - __main__ - DEBUG -   'C.J. Anderson' → 'CJ Anderson'
+2025-08-23 22:43:52,965 - __main__ - DEBUG -   'J.J. Arcega-Whiteside' → 'JJ Arcega-Whiteside'
+2025-08-23 22:43:52,965 - __main__ - DEBUG -   'J.J. Arrington' → 'JJ Arrington'
+2025-08-23 22:43:52,965 - __main__ - DEBUG -   'Brian Asamoah II' → 'Brian Asamoah Ii'
+2025-08-23 22:43:52,965 - __main__ - DEBUG -   'B.J. Askew' → 'BJ Askew'
+2025-08-23 22:43:52,965 - __main__ - DEBUG -   'Calvin Austin III' → 'Calvin Austin Iii'
+2025-08-23 22:43:52,965 - __main__ - DEBUG -   'DeMarcus Ayers' → 'Demarcus Ayers'
+2025-08-23 22:43:52,965 - __main__ - DEBUG -   'C.J. Beathard' → 'CJ Beathard'
+2025-08-23 22:43:52,965 - __main__ - INFO - Name cleaning complete: 374 names standardized
+2025-08-23 22:43:52,965 - __main__ - INFO - Harmonizing positions...
+2025-08-23 22:43:52,967 - __main__ - WARNING - Unmapped positions found: {'SAF': np.int64(89), 'E': np.int64(2), 'DL': np.int64(1)}
+2025-08-23 22:43:52,968 - __main__ - INFO - Position harmonization results:
+2025-08-23 22:43:52,968 - __main__ - INFO -   WR: 1,283 players
+2025-08-23 22:43:52,968 - __main__ - INFO -   RB: 1,061 players
+2025-08-23 22:43:52,968 - __main__ - INFO -   TE: 667 players
+2025-08-23 22:43:52,968 - __main__ - INFO -   DB: 626 players
+2025-08-23 22:43:52,968 - __main__ - INFO -   LB: 444 players
+2025-08-23 22:43:52,968 - __main__ - INFO -   DL: 442 players
+2025-08-23 22:43:52,968 - __main__ - INFO -   QB: 399 players
+2025-08-23 22:43:52,968 - __main__ - INFO -   OL: 150 players
+2025-08-23 22:43:52,968 - __main__ - INFO -   P: 115 players
+2025-08-23 22:43:52,968 - __main__ - INFO -   SAF: 89 players
+2025-08-23 22:43:52,968 - __main__ - INFO -   K: 52 players
+2025-08-23 22:43:52,968 - __main__ - INFO -   ST: 11 players
+2025-08-23 22:43:52,968 - __main__ - INFO -   E: 2 players
+2025-08-23 22:43:52,968 - __main__ - INFO - Position harmonization complete: 27 → 13 categories
+2025-08-23 22:43:52,968 - __main__ - INFO - Adding era buckets...
+2025-08-23 22:43:52,970 - __main__ - INFO - Era distribution:
+2025-08-23 22:43:52,970 - __main__ - INFO -   1960s: 8 players
+2025-08-23 22:43:52,970 - __main__ - INFO -   1980s: 48 players
+2025-08-23 22:43:52,970 - __main__ - INFO -   1990s: 650 players
+2025-08-23 22:43:52,970 - __main__ - INFO -   2000s: 1,342 players
+2025-08-23 22:43:52,970 - __main__ - INFO -   2010s: 2,321 players
+2025-08-23 22:43:52,970 - __main__ - INFO -   2020s: 924 players
+2025-08-23 22:43:52,970 - __main__ - INFO -   Pioneer Era (Pre-1960): 48 players
+2025-08-23 22:43:52,970 - __main__ - INFO - Era bucketing complete
+2025-08-23 22:43:52,970 - __main__ - INFO - Applying legend filtering criteria with position quota guarantees...
+2025-08-23 22:43:53,006 - __main__ - INFO - Basic filters: 2,539/5,341 players pass (47.5%)
+2025-08-23 22:43:53,006 - __main__ - INFO - Applying position-based selection with quotas:
+2025-08-23 22:43:53,006 - __main__ - INFO -   QB: Selected top 200 of 219 players (quota: 200)
+2025-08-23 22:43:53,006 - __main__ - INFO -   RB: Selected top 450 of 604 players (quota: 450)
+2025-08-23 22:43:53,007 - __main__ - INFO -   WR: Selected top 600 of 712 players (quota: 600)
+2025-08-23 22:43:53,007 - __main__ - INFO -   TE: Selected top 250 of 349 players (quota: 250)
+2025-08-23 22:43:53,008 - __main__ - INFO -   OL: Taking all 13 available players (quota: 800)
+2025-08-23 22:43:53,008 - __main__ - INFO -   DL: Taking all 199 available players (quota: 600)
+2025-08-23 22:43:53,008 - __main__ - INFO -   LB: Taking all 168 available players (quota: 450)
+2025-08-23 22:43:53,009 - __main__ - INFO -   DB: Taking all 207 available players (quota: 700)
+2025-08-23 22:43:53,009 - __main__ - INFO -   K: Taking all 11 available players (quota: 120)
+2025-08-23 22:43:53,009 - __main__ - INFO -   P: Taking all 16 available players (quota: 60)
+2025-08-23 22:43:53,009 - __main__ - INFO -   ST: Taking all 2 available players (quota: 60)
+2025-08-23 22:43:53,009 - __main__ - INFO - Final position distribution:
+2025-08-23 22:43:53,010 - __main__ - INFO -   WR: 600 players (quota: 600)
+2025-08-23 22:43:53,010 - __main__ - INFO -   RB: 450 players (quota: 450)
+2025-08-23 22:43:53,010 - __main__ - INFO -   TE: 250 players (quota: 250)
+2025-08-23 22:43:53,010 - __main__ - INFO -   DB: 207 players (quota: 700)
+2025-08-23 22:43:53,010 - __main__ - INFO -   QB: 200 players (quota: 200)
+2025-08-23 22:43:53,010 - __main__ - INFO -   DL: 199 players (quota: 600)
+2025-08-23 22:43:53,010 - __main__ - INFO -   LB: 168 players (quota: 450)
+2025-08-23 22:43:53,010 - __main__ - INFO -   P: 16 players (quota: 60)
+2025-08-23 22:43:53,010 - __main__ - INFO -   OL: 13 players (quota: 800)
+2025-08-23 22:43:53,010 - __main__ - INFO -   K: 11 players (quota: 120)
+2025-08-23 22:43:53,010 - __main__ - INFO -   ST: 2 players (quota: 60)
+2025-08-23 22:43:53,010 - __main__ - INFO - Era distribution:
+2025-08-23 22:43:53,010 - __main__ - INFO -   1960s: 8 players
+2025-08-23 22:43:53,010 - __main__ - INFO -   1980s: 15 players
+2025-08-23 22:43:53,010 - __main__ - INFO -   1990s: 259 players
+2025-08-23 22:43:53,010 - __main__ - INFO -   2000s: 551 players
+2025-08-23 22:43:53,010 - __main__ - INFO -   2010s: 1,027 players
+2025-08-23 22:43:53,010 - __main__ - INFO -   2020s: 210 players
+2025-08-23 22:43:53,010 - __main__ - INFO -   Pioneer Era (Pre-1960): 46 players
+2025-08-23 22:43:53,010 - __main__ - INFO - Total selected: 2,116 players
+2025-08-23 22:43:53,010 - __main__ - INFO - Position-quota filtering complete: 2,116/5,341 players selected (39.6%)
+2025-08-23 22:43:53,010 - __main__ - INFO - [DRY RUN] Would save snapshot to: data/snapshots/2025-08-23
+2025-08-23 22:43:53,010 - __main__ - INFO - [DRY RUN] Would save 2116 players to players.parquet
+2025-08-23 22:43:53,010 - __main__ - INFO - === Normalization Pipeline Complete ===
+2025-08-23 22:43:53,010 - __main__ - INFO - Input: 5,341 players
+2025-08-23 22:43:53,010 - __main__ - INFO - Output: 2,116 legend candidates
+2025-08-23 22:43:53,010 - __main__ - INFO - Retention rate: 39.6%
+2025-08-23 22:43:53,011 - __main__ - INFO - ✅ Milestone 3 complete: Legend candidates ready for ranking pipeline
