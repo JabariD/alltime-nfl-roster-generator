@@ -65,6 +65,8 @@ Enhanced Output Schema (data/raw/players_index.csv):
 - player_id (nflverse gsis_id), full_name, primary_pos, college, birth_date
 - career_span: first_year, last_year, career_seasons, total_career_games
 - tier1_stats: career_passing_yards, career_rushing_yards, career_receiving_yards, career_tds
+- playoff_stats: playoff_games, playoff_passing_yards, playoff_rushing_yards, playoff_receiving_yards, playoff_tds
+- legend_qualification: playoff_performance_bonus (clutch factor for legend identification)
 - tier2_stats: def_solo_tackles, def_sacks, def_ints, draft_pick  
 - honors: pro_bowls, all_pros, hof_flag
 - physical: height_in, weight_lb, forty_time, bench_press, vertical_jump, broad_jump, three_cone, twenty_shuttle
@@ -159,7 +161,11 @@ def build_sample_index(logger: logging.Logger, output_path: Path) -> bool:
         
         logger.info("Loading recent seasonal data (2022-2023)...")
         seasonal_data = nfl.import_seasonal_data(years=[2022, 2023], s_type='REG')
-        logger.info(f"Loaded {len(seasonal_data)} seasonal records")
+        logger.info(f"Loaded {len(seasonal_data)} regular season records")
+        
+        logger.info("Loading recent playoff data (2022-2023)...")
+        playoff_data = nfl.import_seasonal_data(years=[2022, 2023], s_type='POST')
+        logger.info(f"Loaded {len(playoff_data)} playoff records")
         
         logger.info("Loading recent draft data...")
         draft_data = nfl.import_draft_picks(years=list(range(2020, 2024)))
@@ -193,9 +199,35 @@ def build_sample_index(logger: logging.Logger, output_path: Path) -> bool:
                                      career_stats['career_rushing_tds'] + 
                                      career_stats['career_receiving_tds'])
         
+        # Build playoff stats from playoff data
+        logger.info("Aggregating playoff statistics...")
+        playoff_stats = playoff_data.groupby('player_id').agg({
+            'games': 'sum',
+            'passing_yards': 'sum',
+            'rushing_yards': 'sum', 
+            'receiving_yards': 'sum',
+            'passing_tds': 'sum',
+            'rushing_tds': 'sum',
+            'receiving_tds': 'sum'
+        }).reset_index()
+        
+        # Rename playoff columns with playoff_ prefix
+        playoff_stats.columns = ['player_id', 'playoff_games', 'playoff_passing_yards',
+                               'playoff_rushing_yards', 'playoff_receiving_yards', 
+                               'playoff_passing_tds', 'playoff_rushing_tds', 'playoff_receiving_tds']
+        
+        # Calculate total playoff TDs
+        playoff_stats['playoff_tds'] = (playoff_stats['playoff_passing_tds'] + 
+                                       playoff_stats['playoff_rushing_tds'] + 
+                                       playoff_stats['playoff_receiving_tds'])
+        
         # Merge players with career stats
         logger.info("Merging player identity and career data...")
         enhanced_players = players.merge(career_stats, left_on='gsis_id', right_on='player_id', how='left')
+        
+        # Merge with playoff stats
+        logger.info("Merging playoff data...")
+        enhanced_players = enhanced_players.merge(playoff_stats, left_on='gsis_id', right_on='player_id', how='left')
         
         # Merge with draft data for honors and defensive stats  
         logger.info("Merging draft/honors data...")
@@ -232,6 +264,13 @@ def build_sample_index(logger: logging.Logger, output_path: Path) -> bool:
             'career_receiving_yards': enhanced_players['career_receiving_yards'].fillna(0).astype(int),
             'career_tds': enhanced_players['career_tds'].fillna(0).astype(int),
             
+            # Playoff stats
+            'playoff_games': enhanced_players['playoff_games'].fillna(0).astype(int),
+            'playoff_passing_yards': enhanced_players['playoff_passing_yards'].fillna(0).astype(int),
+            'playoff_rushing_yards': enhanced_players['playoff_rushing_yards'].fillna(0).astype(int),
+            'playoff_receiving_yards': enhanced_players['playoff_receiving_yards'].fillna(0).astype(int),
+            'playoff_tds': enhanced_players['playoff_tds'].fillna(0).astype(int),
+            
             # Tier 2 stats (defensive)  
             'def_solo_tackles': enhanced_players['def_solo_tackles'].fillna(0).astype(int),
             'def_sacks': enhanced_players['def_sacks'].fillna(0),
@@ -253,6 +292,29 @@ def build_sample_index(logger: logging.Logger, output_path: Path) -> bool:
             'three_cone': enhanced_players['cone'],
             'twenty_shuttle': enhanced_players['shuttle']
         })
+        
+        # Calculate playoff performance bonus (clutch factor) for legend qualification
+        logger.info("Calculating playoff performance bonus...")
+        
+        # Playoff bonus calculation:
+        # - Base bonus for playoff appearances (games > 0)
+        # - TDs per game bonus (playoff TDs / playoff games if games > 0)  
+        # - High stakes games bonus (games >= 10 for sustained playoff success)
+        playoff_bonus = pd.Series(0.0, index=final_index.index)
+        
+        # Players with playoff experience get base bonus
+        playoff_players = final_index['playoff_games'] > 0
+        playoff_bonus[playoff_players] += 5.0
+        
+        # TD efficiency bonus (capped at 10 points)
+        td_efficiency = final_index['playoff_tds'] / final_index['playoff_games'].replace(0, 1)
+        playoff_bonus += (td_efficiency * 2.0).clip(upper=10.0)
+        
+        # Sustained playoff success bonus  
+        high_stakes = final_index['playoff_games'] >= 10
+        playoff_bonus[high_stakes] += 10.0
+        
+        final_index['playoff_performance_bonus'] = playoff_bonus.round(1)
         
         # Filter to players with some career activity (for testing)
         logger.info("Filtering for players with career data...")
@@ -282,6 +344,8 @@ def build_sample_index(logger: logging.Logger, output_path: Path) -> bool:
             logger.info(f"  - {player['full_name']} ({player['primary_pos']}): "
                        f"{player['career_seasons']} seasons, {player['total_career_games']} games, "
                        f"{player['career_tds']} TDs, {player['pro_bowls']} Pro Bowls | "
+                       f"Playoffs: {player['playoff_games']} games, {player['playoff_tds']} TDs "
+                       f"(bonus: {player['playoff_performance_bonus']}) | "
                        f"{height_str}, {weight_str}, 40yd: {forty_str}")
             
         # Summary stats
@@ -290,6 +354,9 @@ def build_sample_index(logger: logging.Logger, output_path: Path) -> bool:
         logger.info(f"  With >10 games: {len(final_index[final_index['total_career_games'] > 10]):,}")
         logger.info(f"  With Pro Bowls: {len(final_index[final_index['pro_bowls'] > 0]):,}")
         logger.info(f"  With TDs: {len(final_index[final_index['career_tds'] > 0]):,}")
+        logger.info(f"  With playoff experience: {len(final_index[final_index['playoff_games'] > 0]):,}")
+        logger.info(f"  With playoff TDs: {len(final_index[final_index['playoff_tds'] > 0]):,}")
+        logger.info(f"  With high playoff bonus (>10): {len(final_index[final_index['playoff_performance_bonus'] > 10]):,}")
         logger.info(f"  With combine data: {len(final_index[pd.notna(final_index['forty_time'])]):,}")
         logger.info(f"  Hall of Fame: {len(final_index[final_index['hof_flag'] == True]):,}")
         
