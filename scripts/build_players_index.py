@@ -7,7 +7,7 @@ downstream analysis and rating calculations.
 
 Data Sources:
     - Player biographical data and career spans
-    - Season-by-season statistics (1999-2023+)
+    - Season-by-season statistics (1999-2024+)
     - Draft history and honors (Pro Bowls, All-Pro, Hall of Fame)
     - NFL Combine physical measurements
     - Team affiliations by season
