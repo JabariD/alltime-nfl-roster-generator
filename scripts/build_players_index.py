@@ -338,7 +338,7 @@ def build_sample_index(logger: logging.Logger, output_path: Path, full_build: bo
             'def_solo_tackles': enhanced_players['def_solo_tackles'].fillna(0).astype(int),
             'def_sacks': enhanced_players['def_sacks'].fillna(0),
             'def_ints': enhanced_players['def_ints'].fillna(0).astype(int),
-            'draft_pick': enhanced_players['pick'].fillna(999).astype(int),  # 999 = undrafted
+            'draft_pick': enhanced_players['draft_pick'].fillna(999).astype(int),  # Use players dataset draft_pick, 999 = undrafted
             
             # Honors
             'pro_bowls': enhanced_players['probowls'].fillna(0).astype(int),
@@ -355,6 +355,9 @@ def build_sample_index(logger: logging.Logger, output_path: Path, full_build: bo
             'three_cone': enhanced_players['cone'],
             'twenty_shuttle': enhanced_players['shuttle']
         })
+        
+        # Add linemen quality score after initial DataFrame creation
+        final_index['linemen_quality_score'] = 0.0
         
         # Calculate playoff performance bonus (clutch factor) for legend qualification
         logger.info("Calculating playoff performance bonus...")
@@ -379,13 +382,74 @@ def build_sample_index(logger: logging.Logger, output_path: Path, full_build: bo
         
         final_index['playoff_performance_bonus'] = playoff_bonus.round(1)
         
-        # Filter to players with some career activity (includes historical players from draft data)
-        logger.info("Filtering for players with career data (seasonal or draft records)...")
+        # Filter to players with some career activity (improved for linemen inclusion)
+        logger.info("Filtering for players with career data (includes quality linemen)...")
+        
+        # Create quality-based linemen score for better legend identification
+        def calculate_linemen_quality_score(row):
+            """Calculate quality score for offensive linemen based on draft position, size, and experience."""
+            score = 0
+            
+            # Draft position quality (use players dataset draft_pick, not merged draft data)
+            player_draft_pick = enhanced_players.loc[row.name, 'draft_pick'] if 'draft_pick' in enhanced_players.columns else None
+            if pd.notna(player_draft_pick):
+                draft_score = max(0, 300 - player_draft_pick) / 10  # 1st pick = 30pts, 300th = 0pts
+                score += draft_score
+            
+            # Early round bonus (rounds 1-3 are premium) - use players dataset
+            player_draft_round = enhanced_players.loc[row.name, 'draft_round'] if 'draft_round' in enhanced_players.columns else None
+            if pd.notna(player_draft_round):
+                if player_draft_round == 1:      # Round 1
+                    score += 25
+                elif player_draft_round == 2:    # Round 2  
+                    score += 15
+                elif player_draft_round == 3:    # Round 3
+                    score += 10
+            
+            # Career longevity (capped to avoid pure longevity bias)
+            years_exp = enhanced_players.loc[row.name, 'years_of_experience'] if 'years_of_experience' in enhanced_players.columns else 0
+            if pd.notna(years_exp):
+                score += min(years_exp * 2, 24)  # Max 12 years worth of points
+            
+            # Size premium for linemen (bigger typically better)
+            height = row['height_in'] or 0
+            weight = row['weight_lb'] or 0
+            if height >= 76 and weight >= 300:  # Elite size
+                score += 8
+            elif height >= 74 and weight >= 280:  # Good size
+                score += 4
+                
+            # Era adjustment (modern players have more complete data)
+            if pd.notna(row['first_year']):
+                if row['first_year'] >= 2000:      # Modern era
+                    score += 5
+                elif row['first_year'] >= 1990:    # Recent era  
+                    score += 3
+            
+            return score
+        
+        # Apply quality scoring to linemen
+        is_linemen = final_index['primary_pos'].isin(['G', 'C', 'OT'])
+        final_index.loc[is_linemen, 'linemen_quality_score'] = final_index[is_linemen].apply(
+            calculate_linemen_quality_score, axis=1
+        )
+        final_index['linemen_quality_score'] = final_index['linemen_quality_score'].fillna(0)
+        
+        # Improved filtering that includes quality linemen
         final_index = final_index[
+            # Regular players with statistical production
             (final_index['total_career_games'] > 0) |           # From seasonal data (1999+)
             (final_index['career_seasons'] > 0) | 
             (final_index['pro_bowls'] > 0) |
             (final_index['hof_flag'] == True) |
+            
+            # Quality linemen based on draft position and experience (not just stats)
+            ((final_index['primary_pos'].isin(['G', 'C', 'OT'])) & 
+             ((final_index['linemen_quality_score'] >= 10) |              # Quality threshold
+              (enhanced_players['draft_pick'].fillna(999) <= 160) |       # Drafted in first 5 rounds (use players dataset)
+              (enhanced_players['years_of_experience'].fillna(0) >= 2))   # Multi-year NFL career
+            ) |
+            
             # Include historical players with career stats from draft data (1970+)
             ((enhanced_players['draft_games'].fillna(0) > 0) & 
              ((enhanced_players['draft_pass_yards'].fillna(0) > 0) |
@@ -429,6 +493,21 @@ def build_sample_index(logger: logging.Logger, output_path: Path, full_build: bo
         logger.info(f"  With high playoff bonus (>10): {len(final_index[final_index['playoff_performance_bonus'] > 10]):,}")
         logger.info(f"  With combine data: {len(final_index[pd.notna(final_index['forty_time'])]):,}")
         logger.info(f"  Hall of Fame: {len(final_index[final_index['hof_flag'] == True]):,}")
+        
+        # Linemen-specific summary
+        linemen_final = final_index[final_index['primary_pos'].isin(['G', 'C', 'OT'])]
+        if len(linemen_final) > 0:
+            logger.info(f"  === LINEMEN BREAKDOWN ===")
+            logger.info(f"  Total linemen: {len(linemen_final):,}")
+            pos_counts = linemen_final['primary_pos'].value_counts()
+            for pos, count in pos_counts.items():
+                logger.info(f"    {pos}: {count:,}")
+            logger.info(f"  High-quality linemen (score >50): {len(linemen_final[linemen_final['linemen_quality_score'] > 50]):,}")
+            logger.info(f"  Elite linemen (score >70): {len(linemen_final[linemen_final['linemen_quality_score'] > 70]):,}")
+            if len(linemen_final) >= 700:
+                logger.info(f"  ✅ Target 700+ linemen: ACHIEVED")
+            else:
+                logger.info(f"  ⚠️  Target 700+ linemen: {700 - len(linemen_final)} short")
         
         return True
         
