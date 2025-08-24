@@ -30,29 +30,19 @@ Perfect — let’s break this monster into **bite-sized milestones** so you’r
 
 ---
 
-## **Milestone 3: Candidate Filtering**
+## **Milestone 3: Position-Specific Legend Scoring**
 
-✅ Outcome: A trimmed list (\~8–10k players) of “eligible legends.”
+✅ Outcome: Each player has a `legend_score` for each position they played.
 
-* Write `pipeline/normalize.py`: clean names, harmonize positions, bucket eras.
-* Filter out <32 games, or no peak (based on AV or honors).
-* Output `snapshots/<DATE>/players.parquet`.
-  👉 Now you’ve got a clean candidate roster.
-
----
-
-## **Milestone 4: Peak & Career Scoring**
-
-✅ Outcome: Each candidate has a `PeakScore`, `CareerScore`, `RankScore`.
-
-* Implement `pipeline/peaks.py` to find top-3 consecutive seasons.
-* Implement `pipeline/rank.py` → composite scores with weights (from `config/weights.yaml`).
-* Write to `snapshots/<DATE>/ranked_players.parquet`.
-  👉 Now you can rank players per position.
+* Implement `pipeline/legend_scores.py` to calculate position-specific legend scores.
+* For each player-position combination, analyze: physical attributes (height, weight, speed), draft position, career stats, honors, and position-specific factors.
+* Weight factors differently per position (e.g., height matters more for OL than WR, speed crucial for DB/WR).
+* Output `snapshots/<DATE>/legend_scores.parquet` with columns: `player_id, position, legend_score`.
+  👉 Now you can identify the best players at each position across all eras.
 
 ---
 
-## **Milestone 5: Roster Selection (\~3,500 players)**
+## **Milestone 4: Roster Selection (\~3,500 players)**
 
 ✅ Outcome: A balanced roster pool with quotas per position.
 
@@ -63,7 +53,7 @@ Perfect — let’s break this monster into **bite-sized milestones** so you’r
 
 ---
 
-## **Milestone 6: Attribute Mapping (Rules-Only)**
+## **Milestone 5: Attribute Mapping (Rules-Only)**
 
 ✅ Outcome: First pass Madden-style ratings (rules only).
 
@@ -75,7 +65,7 @@ Perfect — let’s break this monster into **bite-sized milestones** so you’r
 
 ---
 
-## **Milestone 7: Archetypes & Modifiers**
+## **Milestone 6: Archetypes & Modifiers**
 
 ✅ Outcome: Style-based diversity in ratings.
 
@@ -86,7 +76,7 @@ Perfect — let’s break this monster into **bite-sized milestones** so you’r
 
 ---
 
-## **Milestone 8: Adapter & Export (Madden 26 CSV)**
+## **Milestone 7: Adapter & Export (Madden 26 CSV)**
 
 ✅ Outcome: Game-ready CSV.
 
@@ -97,7 +87,7 @@ Perfect — let’s break this monster into **bite-sized milestones** so you’r
 
 ---
 
-## **Milestone 9: Validation & Audits**
+## **Milestone 8: Validation & Audits**
 
 ✅ Outcome: Confidence your numbers make sense.
 
@@ -108,7 +98,7 @@ Perfect — let’s break this monster into **bite-sized milestones** so you’r
 
 ---
 
-## **Milestone 10: AI/ML Enhancements (Optional Upgrade Path)**
+## **Milestone 9: AI/ML Enhancements (Optional Upgrade Path)**
 
 ✅ Outcome: Smarter, less hand-tuned ratings.
 
@@ -122,10 +112,10 @@ Perfect — let’s break this monster into **bite-sized milestones** so you’r
 # 🎯 Suggested Roadmap (time-based)
 
 * **Week 1:** Milestones 1–2 → repo + player index CSV.
-* **Week 2:** Milestones 3–4 → candidate filtering + rank scores.
-* **Week 3:** Milestones 5–6 → 3,500-player pool + first rule-based ratings.
-* **Week 4:** Milestones 7–8 → archetypes + Madden 26 export.
-* **Beyond:** Milestones 9–10 → validation + AI upgrades.
+* **Week 2:** Milestone 3 → position-specific legend scoring.
+* **Week 3:** Milestones 4–5 → 3,500-player pool + first rule-based ratings.
+* **Week 4:** Milestones 6–7 → archetypes + Madden 26 export.
+* **Beyond:** Milestones 8–9 → validation + AI upgrades.
 
 ---
 
