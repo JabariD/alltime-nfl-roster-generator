@@ -16,6 +16,17 @@ Output Schema:
     The resulting CSV contains player identity, career statistics, playoff
     performance, defensive metrics, honors, and physical measurements.
 
+Limitations:
+    - Pre-1974 data coverage is limited due to nflverse data availability
+    - Historical legends from earlier eras require manual curation and research
+    - Some players may be missing from automated datasets and need manual review
+    
+Data Quality Notes:
+    - TODO: Data quality may need inspection (e.g., James Harrison was not included
+      in the index despite being a notable player)
+    - Older player records may have incomplete statistical coverage
+    - Physical measurements only available for combine participants (1987+)
+
 Usage:
     python build_players_index.py --out data/raw/players_index.csv --full
 
