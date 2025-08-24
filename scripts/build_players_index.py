@@ -174,8 +174,8 @@ def build_sample_index(logger: logging.Logger, output_path: Path, full_build: bo
             playoff_data = nfl.import_seasonal_data(years=list(range(1999, 2024)), s_type='POST')
             logger.info(f"Loaded {len(playoff_data)} playoff records")
             
-            logger.info("Loading complete draft data...")
-            draft_data = nfl.import_draft_picks(years=list(range(1980, 2024)))
+            logger.info("Loading complete draft data (1970+)...")
+            draft_data = nfl.import_draft_picks(years=list(range(1970, 2024)))
             logger.info(f"Loaded {len(draft_data)} draft records")
             
             logger.info("Loading complete combine data...")
@@ -197,8 +197,8 @@ def build_sample_index(logger: logging.Logger, output_path: Path, full_build: bo
             playoff_data = nfl.import_seasonal_data(years=[2022, 2023], s_type='POST')
             logger.info(f"Loaded {len(playoff_data)} playoff records")
             
-            logger.info("Loading recent draft data...")
-            draft_data = nfl.import_draft_picks(years=list(range(2020, 2024)))
+            logger.info("Loading recent draft data (including historical for testing)...")
+            draft_data = nfl.import_draft_picks(years=list(range(1970, 2024)))
             logger.info(f"Loaded {len(draft_data)} draft records")
             
             logger.info("Loading combine data...")
@@ -261,8 +261,21 @@ def build_sample_index(logger: logging.Logger, output_path: Path, full_build: bo
         
         # Merge with draft data for honors and defensive stats  
         logger.info("Merging draft/honors data...")
-        draft_subset = draft_data[['gsis_id', 'probowls', 'allpro', 'hof', 'pick',
+        draft_subset = draft_data[['gsis_id', 'season', 'to', 'probowls', 'allpro', 'hof', 'pick',
+                                  'games', 'pass_yards', 'rush_yards', 'rec_yards', 
+                                  'pass_tds', 'rush_tds', 'rec_tds', 'seasons_started',
                                   'def_solo_tackles', 'def_sacks', 'def_ints']].copy()
+        # Rename draft columns to avoid conflicts
+        draft_subset = draft_subset.rename(columns={
+            'season': 'draft_season', 
+            'games': 'draft_games',
+            'pass_yards': 'draft_pass_yards', 
+            'rush_yards': 'draft_rush_yards', 
+            'rec_yards': 'draft_rec_yards',
+            'pass_tds': 'draft_pass_tds', 
+            'rush_tds': 'draft_rush_tds', 
+            'rec_tds': 'draft_rec_tds'
+        })
         enhanced_players = enhanced_players.merge(draft_subset, on='gsis_id', how='left')
         
         # Merge with combine data for physical measurements
@@ -284,17 +297,35 @@ def build_sample_index(logger: logging.Logger, output_path: Path, full_build: bo
             'college': enhanced_players['college_name'],
             'birth_date': enhanced_players['birth_date'],
             
-            # Career span (use actual rookie/last season when available)
-            'first_year': enhanced_players['rookie_season'].fillna(enhanced_players['first_year']),
-            'last_year': enhanced_players['last_season'].fillna(enhanced_players['last_year']),
-            'career_seasons': enhanced_players['career_seasons'].fillna(0).astype(int),
-            'total_career_games': enhanced_players['total_career_games'].fillna(0).astype(int),
+            # Career span (use seasonal data first, then draft data, then player bio data)
+            'first_year': enhanced_players['rookie_season'].fillna(
+                enhanced_players['first_year'].fillna(enhanced_players['draft_season'])  # Use draft year as fallback
+            ),
+            'last_year': enhanced_players['last_season'].fillna(
+                enhanced_players['last_year'].fillna(enhanced_players['to'])  # Use draft 'to' year as fallback
+            ),
+            'career_seasons': enhanced_players['career_seasons'].fillna(
+                enhanced_players['seasons_started'].fillna(0)  # Use draft seasons_started as fallback
+            ).astype(int),
+            'total_career_games': enhanced_players['total_career_games'].fillna(
+                enhanced_players['draft_games'].fillna(0)  # Use draft games as fallback
+            ).astype(int),
             
-            # Tier 1 stats (skill positions)
-            'career_passing_yards': enhanced_players['career_passing_yards'].fillna(0).astype(int),
-            'career_rushing_yards': enhanced_players['career_rushing_yards'].fillna(0).astype(int),
-            'career_receiving_yards': enhanced_players['career_receiving_yards'].fillna(0).astype(int),
-            'career_tds': enhanced_players['career_tds'].fillna(0).astype(int),
+            # Tier 1 stats (skill positions) - use seasonal data first, then draft data
+            'career_passing_yards': enhanced_players['career_passing_yards'].fillna(
+                enhanced_players['draft_pass_yards'].fillna(0)
+            ).astype(int),
+            'career_rushing_yards': enhanced_players['career_rushing_yards'].fillna(
+                enhanced_players['draft_rush_yards'].fillna(0)
+            ).astype(int),
+            'career_receiving_yards': enhanced_players['career_receiving_yards'].fillna(
+                enhanced_players['draft_rec_yards'].fillna(0)
+            ).astype(int),
+            'career_tds': enhanced_players['career_tds'].fillna(
+                (enhanced_players['draft_pass_tds'].fillna(0) + 
+                 enhanced_players['draft_rush_tds'].fillna(0) + 
+                 enhanced_players['draft_rec_tds'].fillna(0))
+            ).astype(int),
             
             # Playoff stats
             'playoff_games': enhanced_players['playoff_games'].fillna(0).astype(int),
@@ -348,13 +379,19 @@ def build_sample_index(logger: logging.Logger, output_path: Path, full_build: bo
         
         final_index['playoff_performance_bonus'] = playoff_bonus.round(1)
         
-        # Filter to players with some career activity
-        logger.info("Filtering for players with career data...")
+        # Filter to players with some career activity (includes historical players from draft data)
+        logger.info("Filtering for players with career data (seasonal or draft records)...")
         final_index = final_index[
-            (final_index['total_career_games'] > 0) |
+            (final_index['total_career_games'] > 0) |           # From seasonal data (1999+)
             (final_index['career_seasons'] > 0) | 
             (final_index['pro_bowls'] > 0) |
-            (final_index['hof_flag'] == True)
+            (final_index['hof_flag'] == True) |
+            # Include historical players with career stats from draft data (1970+)
+            ((enhanced_players['draft_games'].fillna(0) > 0) & 
+             ((enhanced_players['draft_pass_yards'].fillna(0) > 0) |
+              (enhanced_players['draft_rush_yards'].fillna(0) > 0) |
+              (enhanced_players['draft_rec_yards'].fillna(0) > 0) |
+              (enhanced_players['def_solo_tackles'].fillna(0) > 0)))
         ].copy()
         
         # Limit to first 100 players only for testing (not full build)
