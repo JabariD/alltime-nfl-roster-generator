@@ -146,34 +146,64 @@ def test_nflverse_connection(logger: logging.Logger) -> bool:
         return False
 
 
-def build_sample_index(logger: logging.Logger, output_path: Path) -> bool:
-    """Build enhanced player index with legend identification data (limited scope for testing)."""
+def build_sample_index(logger: logging.Logger, output_path: Path, full_build: bool = False) -> bool:
+    """Build enhanced player index with legend identification data.
+    
+    Args:
+        logger: Logger instance
+        output_path: Path to save the output CSV
+        full_build: If True, build complete historical dataset. If False, limited scope for testing.
+    """
     try:
         import nfl_data_py as nfl
         import pandas as pd
         
-        logger.info("Building enhanced player index (test scope: recent years only)...")
-        
-        # Load datasets with limited scope for testing
-        logger.info("Loading players data...")
-        players = nfl.import_players()
-        logger.info(f"Loaded {len(players)} total players")
-        
-        logger.info("Loading recent seasonal data (2022-2023)...")
-        seasonal_data = nfl.import_seasonal_data(years=[2022, 2023], s_type='REG')
-        logger.info(f"Loaded {len(seasonal_data)} regular season records")
-        
-        logger.info("Loading recent playoff data (2022-2023)...")
-        playoff_data = nfl.import_seasonal_data(years=[2022, 2023], s_type='POST')
-        logger.info(f"Loaded {len(playoff_data)} playoff records")
-        
-        logger.info("Loading recent draft data...")
-        draft_data = nfl.import_draft_picks(years=list(range(2020, 2024)))
-        logger.info(f"Loaded {len(draft_data)} draft records")
-        
-        logger.info("Loading combine data...")
-        combine_data = nfl.import_combine_data(years=list(range(2020, 2024)))
-        logger.info(f"Loaded {len(combine_data)} combine records")
+        if full_build:
+            logger.info("Building FULL enhanced player index (complete historical dataset)...")
+            
+            # Load complete datasets
+            logger.info("Loading players data...")
+            players = nfl.import_players()
+            logger.info(f"Loaded {len(players)} total players")
+            
+            logger.info("Loading complete seasonal data (1999-2023)...")
+            seasonal_data = nfl.import_seasonal_data(years=list(range(1999, 2024)), s_type='REG')
+            logger.info(f"Loaded {len(seasonal_data)} regular season records")
+            
+            logger.info("Loading complete playoff data (1999-2023)...")
+            playoff_data = nfl.import_seasonal_data(years=list(range(1999, 2024)), s_type='POST')
+            logger.info(f"Loaded {len(playoff_data)} playoff records")
+            
+            logger.info("Loading complete draft data...")
+            draft_data = nfl.import_draft_picks(years=list(range(1980, 2024)))
+            logger.info(f"Loaded {len(draft_data)} draft records")
+            
+            logger.info("Loading complete combine data...")
+            combine_data = nfl.import_combine_data(years=list(range(1987, 2024)))
+            logger.info(f"Loaded {len(combine_data)} combine records")
+        else:
+            logger.info("Building enhanced player index (test scope: recent years only)...")
+            
+            # Load datasets with limited scope for testing
+            logger.info("Loading players data...")
+            players = nfl.import_players()
+            logger.info(f"Loaded {len(players)} total players")
+            
+            logger.info("Loading recent seasonal data (2022-2023)...")
+            seasonal_data = nfl.import_seasonal_data(years=[2022, 2023], s_type='REG')
+            logger.info(f"Loaded {len(seasonal_data)} regular season records")
+            
+            logger.info("Loading recent playoff data (2022-2023)...")
+            playoff_data = nfl.import_seasonal_data(years=[2022, 2023], s_type='POST')
+            logger.info(f"Loaded {len(playoff_data)} playoff records")
+            
+            logger.info("Loading recent draft data...")
+            draft_data = nfl.import_draft_picks(years=list(range(2020, 2024)))
+            logger.info(f"Loaded {len(draft_data)} draft records")
+            
+            logger.info("Loading combine data...")
+            combine_data = nfl.import_combine_data(years=list(range(2020, 2024)))
+            logger.info(f"Loaded {len(combine_data)} combine records")
         
         # Build career stats from limited seasonal data
         logger.info("Aggregating career statistics...")
@@ -316,7 +346,7 @@ def build_sample_index(logger: logging.Logger, output_path: Path) -> bool:
         
         final_index['playoff_performance_bonus'] = playoff_bonus.round(1)
         
-        # Filter to players with some career activity (for testing)
+        # Filter to players with some career activity
         logger.info("Filtering for players with career data...")
         final_index = final_index[
             (final_index['total_career_games'] > 0) |
@@ -325,8 +355,9 @@ def build_sample_index(logger: logging.Logger, output_path: Path) -> bool:
             (final_index['hof_flag'] == True)
         ].copy()
         
-        # Limit to first 100 players for testing
-        final_index = final_index.head(100)
+        # Limit to first 100 players only for testing (not full build)
+        if not full_build:
+            final_index = final_index.head(100)
         
         # Save to CSV
         output_path.parent.mkdir(parents=True, exist_ok=True)
@@ -375,15 +406,21 @@ def build_sample_index(logger: logging.Logger, output_path: Path) -> bool:
 @click.option('--test-only', '-t',
               is_flag=True,
               help='Only test connection, don\'t build index')
+@click.option('--full', '-f',
+              is_flag=True,
+              help='Build complete historical dataset (1999-2023), not just recent test data')
 @click.option('--verbose', '-v', 
               is_flag=True,
               help='Enable verbose logging')
-def main(out: str, test_only: bool, verbose: bool) -> None:
-    """Build player index from nflverse-data (proof of concept)."""
+def main(out: str, test_only: bool, full: bool, verbose: bool) -> None:
+    """Build player index from nflverse-data."""
     logger = setup_logging(verbose)
     output_path = Path(out)
     
-    logger.info("=== nflverse-data Player Index Builder (Proof of Concept) ===")
+    if full:
+        logger.info("=== nflverse-data Player Index Builder (FULL BUILD) ===")
+    else:
+        logger.info("=== nflverse-data Player Index Builder (Test Sample) ===")
     
     # Test connection first
     if not test_nflverse_connection(logger):
@@ -394,9 +431,12 @@ def main(out: str, test_only: bool, verbose: bool) -> None:
         logger.info("Test-only mode complete.")
         return
     
-    # Build sample index
-    if build_sample_index(logger, output_path):
-        logger.info("✅ Sample player index built successfully!")
+    # Build player index
+    if build_sample_index(logger, output_path, full_build=full):
+        if full:
+            logger.info("✅ Full historical player index built successfully!")
+        else:
+            logger.info("✅ Sample player index built successfully!")
     else:
         logger.error("❌ Failed to build player index")
 
