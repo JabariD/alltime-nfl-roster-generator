@@ -268,8 +268,10 @@ def build_sample_index(logger: logging.Logger, output_path: Path, full_build: bo
         # Merge with combine data for physical measurements
         logger.info("Merging combine/physical data...")
         # Use pfr_id as the join key for combine data since it's more reliable
+        # Filter out null pfr_id values to avoid cross-join duplicates
         combine_subset = combine_data[['pfr_id', 'ht', 'wt', 'forty', 'bench', 'vertical', 
                                      'broad_jump', 'cone', 'shuttle']].copy()
+        combine_subset = combine_subset[combine_subset['pfr_id'].notna()].drop_duplicates(subset=['pfr_id'])
         enhanced_players = enhanced_players.merge(combine_subset, left_on='pfr_id', right_on='pfr_id', how='left')
         
         # Create final enhanced schema
