@@ -36,10 +36,8 @@ Enhanced Output Schema (data/raw/players_index.csv):
 - career_span: first_year, last_year, career_seasons, total_career_games
 - tier1_stats: career_passing_yards, career_rushing_yards, career_receiving_yards, career_tds
 - tier2_stats: def_solo_tackles, def_sacks, def_ints, draft_pick  
-- tier3_stats: games_started, team_changes (longevity indicators)
-- tier4_stats: seasons_as_specialist, team_tenure_count
 - honors: pro_bowls, all_pros, hof_flag
-- legend_scores: peak_season_score, position_tier_score, overall_legend_score
+- physical: height_in, weight_lb, forty_time, bench_press, vertical_jump, broad_jump, three_cone, twenty_shuttle
 
 Data Quality: ~27k total players → filter to ~8-10k legend candidates
 """
@@ -114,49 +112,158 @@ def test_nflverse_connection(logger: logging.Logger) -> bool:
 
 
 def build_sample_index(logger: logging.Logger, output_path: Path) -> bool:
-    """Build a small sample player index for testing."""
+    """Build enhanced player index with legend identification data (limited scope for testing)."""
     try:
         import nfl_data_py as nfl
+        import pandas as pd
         
-        logger.info("Building sample player index...")
+        logger.info("Building enhanced player index (test scope: recent years only)...")
         
-        # Load basic player data
+        # Load datasets with limited scope for testing
+        logger.info("Loading players data...")
         players = nfl.import_players()
         logger.info(f"Loaded {len(players)} total players")
         
-        # Load recent roster data for context
-        rosters_2023 = nfl.import_seasonal_rosters(years=[2023])
+        logger.info("Loading recent seasonal data (2022-2023)...")
+        seasonal_data = nfl.import_seasonal_data(years=[2022, 2023], s_type='REG')
+        logger.info(f"Loaded {len(seasonal_data)} seasonal records")
         
-        # Get active players from 2023
-        active_players = rosters_2023['player_id'].unique()
-        recent_players = players[players['gsis_id'].isin(active_players)].copy()
+        logger.info("Loading recent draft data...")
+        draft_data = nfl.import_draft_picks(years=list(range(2020, 2024)))
+        logger.info(f"Loaded {len(draft_data)} draft records")
         
-        logger.info(f"Found {len(recent_players)} active players in 2023")
+        logger.info("Loading combine data...")
+        combine_data = nfl.import_combine_data(years=list(range(2020, 2024)))
+        logger.info(f"Loaded {len(combine_data)} combine records")
         
-        # Create simplified index with key columns
-        player_index = recent_players[['gsis_id', 'display_name', 'position', 'college_name', 'birth_date']].copy()
-        player_index.columns = ['player_id', 'full_name', 'primary_pos', 'college', 'birth_date']
+        # Build career stats from limited seasonal data
+        logger.info("Aggregating career statistics...")
+        career_stats = seasonal_data.groupby('player_id').agg({
+            'games': 'sum',
+            'passing_yards': 'sum',
+            'rushing_yards': 'sum', 
+            'receiving_yards': 'sum',
+            'passing_tds': 'sum',
+            'rushing_tds': 'sum',
+            'receiving_tds': 'sum',
+            'season': ['min', 'max', 'count']
+        }).reset_index()
         
-        # Add some derived info
-        player_index['first_year'] = 2023  # Placeholder - would need more complex logic
-        player_index['last_year'] = 2023   # Placeholder
-        player_index['teams'] = 'Multiple'  # Placeholder
+        # Flatten column names
+        career_stats.columns = ['player_id', 'total_career_games', 'career_passing_yards',
+                               'career_rushing_yards', 'career_receiving_yards', 
+                               'career_passing_tds', 'career_rushing_tds', 'career_receiving_tds',
+                               'first_year', 'last_year', 'career_seasons']
+        
+        # Calculate total TDs
+        career_stats['career_tds'] = (career_stats['career_passing_tds'] + 
+                                     career_stats['career_rushing_tds'] + 
+                                     career_stats['career_receiving_tds'])
+        
+        # Merge players with career stats
+        logger.info("Merging player identity and career data...")
+        enhanced_players = players.merge(career_stats, left_on='gsis_id', right_on='player_id', how='left')
+        
+        # Merge with draft data for honors and defensive stats  
+        logger.info("Merging draft/honors data...")
+        draft_subset = draft_data[['gsis_id', 'probowls', 'allpro', 'hof', 'pick',
+                                  'def_solo_tackles', 'def_sacks', 'def_ints']].copy()
+        enhanced_players = enhanced_players.merge(draft_subset, on='gsis_id', how='left')
+        
+        # Merge with combine data for physical measurements
+        logger.info("Merging combine/physical data...")
+        # Use pfr_id as the join key for combine data since it's more reliable
+        combine_subset = combine_data[['pfr_id', 'ht', 'wt', 'forty', 'bench', 'vertical', 
+                                     'broad_jump', 'cone', 'shuttle']].copy()
+        enhanced_players = enhanced_players.merge(combine_subset, left_on='pfr_id', right_on='pfr_id', how='left')
+        
+        # Create final enhanced schema
+        logger.info("Building enhanced output schema...")
+        final_index = pd.DataFrame({
+            # Identity
+            'player_id': enhanced_players['gsis_id'],
+            'full_name': enhanced_players['display_name'],
+            'primary_pos': enhanced_players['position'], 
+            'college': enhanced_players['college_name'],
+            'birth_date': enhanced_players['birth_date'],
+            
+            # Career span (use actual rookie/last season when available)
+            'first_year': enhanced_players['rookie_season'].fillna(enhanced_players['first_year']),
+            'last_year': enhanced_players['last_season'].fillna(enhanced_players['last_year']),
+            'career_seasons': enhanced_players['career_seasons'].fillna(0).astype(int),
+            'total_career_games': enhanced_players['total_career_games'].fillna(0).astype(int),
+            
+            # Tier 1 stats (skill positions)
+            'career_passing_yards': enhanced_players['career_passing_yards'].fillna(0).astype(int),
+            'career_rushing_yards': enhanced_players['career_rushing_yards'].fillna(0).astype(int),
+            'career_receiving_yards': enhanced_players['career_receiving_yards'].fillna(0).astype(int),
+            'career_tds': enhanced_players['career_tds'].fillna(0).astype(int),
+            
+            # Tier 2 stats (defensive)  
+            'def_solo_tackles': enhanced_players['def_solo_tackles'].fillna(0).astype(int),
+            'def_sacks': enhanced_players['def_sacks'].fillna(0),
+            'def_ints': enhanced_players['def_ints'].fillna(0).astype(int),
+            'draft_pick': enhanced_players['pick'].fillna(999).astype(int),  # 999 = undrafted
+            
+            # Honors
+            'pro_bowls': enhanced_players['probowls'].fillna(0).astype(int),
+            'all_pros': enhanced_players['allpro'].fillna(0).astype(int),
+            'hof_flag': enhanced_players['hof'].fillna(False).astype(bool),
+            
+            # Physical/Combine Data (use from players table first, then combine data)
+            'height_in': enhanced_players['height'].fillna(enhanced_players['ht']),
+            'weight_lb': enhanced_players['weight'].fillna(enhanced_players['wt']),
+            'forty_time': enhanced_players['forty'],
+            'bench_press': enhanced_players['bench'],
+            'vertical_jump': enhanced_players['vertical'], 
+            'broad_jump': enhanced_players['broad_jump'],
+            'three_cone': enhanced_players['cone'],
+            'twenty_shuttle': enhanced_players['shuttle']
+        })
+        
+        # Filter to players with some career activity (for testing)
+        logger.info("Filtering for players with career data...")
+        final_index = final_index[
+            (final_index['total_career_games'] > 0) |
+            (final_index['career_seasons'] > 0) | 
+            (final_index['pro_bowls'] > 0) |
+            (final_index['hof_flag'] == True)
+        ].copy()
+        
+        # Limit to first 100 players for testing
+        final_index = final_index.head(100)
         
         # Save to CSV
         output_path.parent.mkdir(parents=True, exist_ok=True)
-        player_index.to_csv(output_path, index=False)
+        final_index.to_csv(output_path, index=False)
         
-        logger.info(f"Sample player index saved: {len(player_index)} players → {output_path}")
+        logger.info(f"Enhanced player index saved: {len(final_index)} players → {output_path}")
         
-        # Show sample
-        logger.info("Sample entries:")
-        for _, player in player_index.head(5).iterrows():
-            logger.info(f"  - {player['full_name']} ({player['primary_pos']})")
+        # Show sample entries with enhanced data
+        logger.info("Sample entries with enhanced schema:")
+        for _, player in final_index.head(5).iterrows():
+            height_str = f"{player['height_in']}\"" if pd.notna(player['height_in']) else "N/A"
+            weight_str = f"{player['weight_lb']}lb" if pd.notna(player['weight_lb']) else "N/A"
+            forty_str = f"{player['forty_time']}s" if pd.notna(player['forty_time']) else "N/A"
             
+            logger.info(f"  - {player['full_name']} ({player['primary_pos']}): "
+                       f"{player['career_seasons']} seasons, {player['total_career_games']} games, "
+                       f"{player['career_tds']} TDs, {player['pro_bowls']} Pro Bowls | "
+                       f"{height_str}, {weight_str}, 40yd: {forty_str}")
+            
+        # Summary stats
+        logger.info("Enhanced index summary:")
+        logger.info(f"  Total players: {len(final_index):,}")
+        logger.info(f"  With >10 games: {len(final_index[final_index['total_career_games'] > 10]):,}")
+        logger.info(f"  With Pro Bowls: {len(final_index[final_index['pro_bowls'] > 0]):,}")
+        logger.info(f"  With TDs: {len(final_index[final_index['career_tds'] > 0]):,}")
+        logger.info(f"  With combine data: {len(final_index[pd.notna(final_index['forty_time'])]):,}")
+        logger.info(f"  Hall of Fame: {len(final_index[final_index['hof_flag'] == True]):,}")
+        
         return True
         
     except Exception as e:
-        logger.error(f"Error building sample index: {e}")
+        logger.error(f"Error building enhanced index: {e}")
         return False
 
 
