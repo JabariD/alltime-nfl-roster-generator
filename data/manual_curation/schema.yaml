@@ -1,0 +1,36 @@
+# Manual Curation Schema for NFL Legend Scores
+# Workflow: Create position-specific YAML files manually (e.g. qb_legends.yaml, wr_legends.yaml)
+# The legend_scores.py script will generate scores for ALL players, but override with manual curation when available
+
+# Position-specific legend lists
+
+# Schema for each position file you create manually:
+position_schema:
+  position: str  # QB, RB, WR, TE, OL, DL, LB, DB, K, P
+  target_count: int  # 32 or 64 based on position tier
+  legends:
+    - player_id: str  # Must match player_id in players_index_full.csv
+      full_name: str  # For validation/readability
+      legend_score: int  # 98-100 range for manual legends
+      tier: int  # 1=Greatest of All Time, 2=Elite Legend, 3=Notable Legend
+      era: str  # Optional era context (e.g. "1960s-70s", "Modern Era")
+      justification: str  # Brief reason for inclusion and score
+      curator: str  # Who made this decision
+      date_added: str  # When this was curated (YYYY-MM-DD)
+
+# Score Range Guidelines:
+# 100: Undisputed GOATs (Brady, Montana, Rice, etc.)
+# 99: Elite legends with strong GOAT arguments  
+# 98: Clear legends, may be position-specific GOATs
+
+# Tier Guidelines:
+# Tier 1: 2-4 players per position - undisputed legends
+# Tier 2: 8-12 players per position - elite legends
+# Tier 3: Remaining slots - notable legends who deserve recognition
+
+# Validation Rules:
+# 1. All player_ids must exist in players_index_full.csv
+# 2. No duplicate player_ids across all position files
+# 3. Legend scores must be 98-100
+# 4. Each position should meet its target_count
+# 5. At least one justification sentence required

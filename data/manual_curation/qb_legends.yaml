@@ -1,0 +1,260 @@
+# Quarterback Legends - Example Template
+# Target: 32 manually curated QB legends
+
+position: QB
+target_count: 32
+legends:
+  # Tier 1: Undisputed GOATs (Score: 100)
+  - player_id: "00-0019596" 
+    full_name: "Tom Brady"
+    legend_score: 100
+    tier: 1
+    era: "Modern Era"
+    justification: "7 Super Bowl wins, 5 Super Bowl MVPs, most playoff wins and TDs in history"
+    curator: "manual"
+    date_added: "2025-08-25"
+  
+  - player_id: "00-0011493"
+    full_name: "Joe Montana" 
+    legend_score: 100
+    tier: 1
+    era: "1980s-90s"
+    justification: "4 Super Bowl wins, 3 Super Bowl MVPs, clutch playoff performer"
+    curator: "manual"
+    date_added: "2025-08-25"
+
+  - player_id: "00-0033873"
+    full_name: "Patrick Mahomes"
+    legend_score: 100
+    tier: 1
+    era: "Modern Era"
+    justification: "3 Super Bowl wins, 3 Super Bowl MVPs, generational talent with exceptional arm strength"
+    curator: "manual"
+    date_added: "2025-08-25"
+
+  # Tier 2: Elite Legends (Score: 99)
+  - player_id: "HOF-1963-013"
+    full_name: "Johnny Unitas"
+    legend_score: 99
+    tier: 2
+    era: "1960s-70s"
+    justification: "Passing skills in an era of running the football helped start to evolve the game into what it is today"
+    curator: "manual"
+    date_added: "2025-08-25"
+
+  - player_id: "00-0004884"
+    full_name: "John Elway"
+    legend_score: 99
+    tier: 2
+    era: "1980s-90s"
+    justification: "Nobody wanted to face John Elway with two minutes to go in a one-score game. He was a magician"
+    curator: "manual"
+    date_added: "2025-08-25"
+
+  - player_id: "00-0010346"
+    full_name: "Peyton Manning"
+    legend_score: 99
+    tier: 2
+    era: "Modern Era" 
+    justification: "Greatest regular season QB of all time, unfortunately had some stumbles in the postseason"
+    curator: "manual"
+    date_added: "2025-08-25"
+
+  - player_id: "00-0023459"
+    full_name: "Aaron Rodgers"
+    legend_score: 99
+    tier: 2
+    era: "Modern Era"
+    justification: "Possibly the best pure arm talent of any QB I've ever seen"
+    curator: "manual"
+    date_added: "2025-08-25"
+
+  - player_id: "00-0010379"
+    full_name: "Dan Marino"
+    legend_score: 99
+    tier: 2
+    era: "1980s-90s"
+    justification: "Arm talent, release, and volume stats were second to none for his era. Had he won a Super Bowl, he would be higher"
+    curator: "manual"
+    date_added: "2025-08-25"
+
+  - player_id: "HOF-1965-008"
+    full_name: "Otto Graham"
+    legend_score: 99
+    tier: 2
+    era: "1940s-50s"
+    justification: "Had success throwing the ball in an era when nobody was throwing the ball"
+    curator: "manual"
+    date_added: "2025-08-25"
+
+  - player_id: "HOF-1985-017"
+    full_name: "Roger Staubach"
+    legend_score: 99
+    tier: 2
+    era: "1970s"
+    justification: "Best QB of the 70s despite only 8 seasons as a starter, even with Bradshaw's 4 championships"
+    curator: "manual"
+    date_added: "2025-08-25"
+
+  - player_id: "00-0018441"
+    full_name: "Steve Young"
+    legend_score: 99
+    tier: 2
+    era: "1980s-90s"
+    justification: "His ability to run and throw was remarkable. Underrated, 11th all-time"
+    curator: "manual"
+    date_added: "2025-08-25"
+
+  - player_id: "00-0020531"
+    full_name: "Drew Brees"
+    legend_score: 99
+    tier: 2
+    era: "Modern Era"
+    justification: "He and Sean Payton put up some obscene volume numbers for several years"
+    curator: "manual"
+    date_added: "2025-08-25"
+
+  - player_id: "BRA462819"
+    full_name: "Terry Bradshaw"
+    legend_score: 99
+    tier: 2
+    era: "1970s"
+    justification: "Had a great defense, but four Super Bowls is hard to argue against"
+    curator: "manual"
+    date_added: "2025-08-25"
+
+  - player_id: "00-0005106"
+    full_name: "Brett Favre"
+    legend_score: 99
+    tier: 2
+    era: "1990s-2000s"
+    justification: "The Dallas Cowboys are the only reason he isn't higher on this list"
+    curator: "manual"
+    date_added: "2025-08-25"
+
+  - player_id: "HOF-1965-007"
+    full_name: "Sid Luckman"
+    legend_score: 99
+    tier: 2
+    era: "1940s"
+    justification: "Luckman and Baugh were the first Brady and Manning. Most probably have Baugh ahead of Luckman, I'll take the championships"
+    curator: "manual"
+    date_added: "2025-08-25"
+
+  - player_id: "HOF-1963-004"
+    full_name: "Sammy Baugh"
+    legend_score: 99
+    tier: 2
+    era: "1940s"
+    justification: "Still want to rank Baugh ahead of Luckman? Don't forget Baugh lost to Luckman 73-0 in the NFL Championship game"
+    curator: "manual"
+    date_added: "2025-08-25"
+
+  - player_id: "00-0000104"
+    full_name: "Troy Aikman"
+    legend_score: 99
+    tier: 2
+    era: "1990s"
+    justification: "Three titles. Statistics were never gaudy, but he rarely made a crippling mistake which is why the Cowboys consistently won"
+    curator: "manual"
+    date_added: "2025-08-25"
+
+  - player_id: "00-0009111"
+    full_name: "Jim Kelly"
+    legend_score: 99
+    tier: 2
+    era: "1980s-90s"
+    justification: "Kelly's offenses in Buffalo were all-time great. 0-4 in the big game will always be a blackeye on his resume"
+    curator: "manual"
+    date_added: "2025-08-25"
+
+  - player_id: "STA927364"
+    full_name: "Bart Starr"
+    legend_score: 99
+    tier: 2
+    era: "1960s"
+    justification: "The 1960s Packers just won championships. They technically 3-peated winning the title before the Super Bowl started"
+    curator: "manual"
+    date_added: "2025-08-25"
+
+  # Tier 3: Great Legends (Score: 98)
+  - player_id: "TAR384729"
+    full_name: "Fran Tarkenton"
+    legend_score: 98
+    tier: 3
+    era: "1960s-70s"
+    justification: "The league's first running quarterback. A phenomenal scrambler, also the league's all-time passing leader in yards from 1976 to 1995"
+    curator: "manual"
+    date_added: "2025-08-25"
+
+  - player_id: "00-0017200"
+    full_name: "Kurt Warner"
+    legend_score: 98
+    tier: 3
+    era: "1990s-2000s"
+    justification: "From grocery store stock boy to Super Bowl champion and MVP, one of the greatest comeback stories in NFL history"
+    curator: "manual"
+    date_added: "2025-08-25"
+
+  - player_id: "00-0022924"
+    full_name: "Ben Roethlisberger"
+    legend_score: 98
+    tier: 3
+    era: "Modern Era"
+    justification: "Two Super Bowl wins with incredible ability to extend plays and make throws under pressure"
+    curator: "manual"
+    date_added: "2025-08-25"
+
+  - player_id: "FOU384729"
+    full_name: "Dan Fouts"
+    legend_score: 98
+    tier: 3
+    era: "1970s-80s"
+    justification: "Air Coryell offense pioneer who threw for over 4,000 yards in three consecutive seasons when that was rare"
+    curator: "manual"
+    date_added: "2025-08-25"
+
+  - player_id: "00-0011524"
+    full_name: "Warren Moon"
+    legend_score: 98
+    tier: 3
+    era: "1980s-90s"
+    justification: "First Black quarterback in the modern era to achieve sustained success, broke barriers and stereotypes"
+    curator: "manual"
+    date_added: "2025-08-25"
+
+  - player_id: "STA927364"
+    full_name: "Ken Stabler"
+    legend_score: 98
+    tier: 3
+    era: "1970s"
+    justification: "The Snake was a gunslinger who led the Raiders to a Super Bowl victory with his clutch performances"
+    curator: "manual"
+    date_added: "2025-08-25"
+
+  - player_id: "DAW384729"
+    full_name: "Len Dawson"
+    legend_score: 98
+    tier: 3
+    era: "1960s-70s"
+    justification: "Super Bowl IV champion who was instrumental in the AFL-NFL merger success"
+    curator: "manual"
+    date_added: "2025-08-25"
+
+  - player_id: "HOF-1985-016"
+    full_name: "Joe Namath"
+    legend_score: 98
+    tier: 3
+    era: "1960s-70s"
+    justification: "Won the most important game in NFL history"
+    curator: "manual"
+    date_added: "2025-08-25"
+
+  - player_id: "HOF-1968-026"
+    full_name: "Norm Van Brocklin"
+    legend_score: 98
+    tier: 3
+    era: "1950s"
+    justification: "The Dutchman threw for 554 yards in a single game, a record that stood for decades"
+    curator: "manual"
+    date_added: "2025-08-25"

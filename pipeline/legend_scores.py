@@ -17,6 +17,7 @@ from pathlib import Path
 
 import click
 import pandas as pd
+import yaml
 
 # Configure logging
 logging.basicConfig(
@@ -335,8 +336,39 @@ def calculate_attribute_scores(
     return scores
 
 
+def load_manual_curation(curation_dir: Path) -> dict[str, dict]:
+    """Load manual curation data from YAML files."""
+    manual_legends = {}
+    
+    if not curation_dir.exists():
+        logger.info(f"Manual curation directory {curation_dir} not found")
+        return manual_legends
+    
+    # Load position-specific legend files
+    for yaml_file in curation_dir.glob("*_legends.yaml"):
+        try:
+            with open(yaml_file, 'r') as f:
+                data = yaml.safe_load(f)
+                if data and 'legends' in data:
+                    for legend in data['legends']:
+                        player_id = legend.get('player_id')
+                        if player_id:
+                            manual_legends[player_id] = {
+                                'full_name': legend.get('full_name', f'Unknown Player ({player_id})'),
+                                'legend_score': legend.get('legend_score', 98),
+                                'tier': legend.get('tier', 3),
+                                'justification': legend.get('justification', 'Manual curation'),
+                                'position': data.get('position', 'Unknown')
+                            }
+        except Exception as e:
+            logger.warning(f"Error loading {yaml_file}: {e}")
+    
+    logger.info(f"Loaded {len(manual_legends)} manually curated legends")
+    return manual_legends
+
+
 def calculate_legend_score(attribute_scores: dict[str, float], position: str) -> float:
-    """Calculate weighted legend score for a position."""
+    """Calculate weighted legend score for a position (algorithmic scoring: 50-97)."""
     if position not in POSITION_WEIGHTS:
         logger.warning(f"Unknown position: {position}, using default weights")
         position = 'LB'  # Default fallback
@@ -357,12 +389,31 @@ def calculate_legend_score(attribute_scores: dict[str, float], position: str) ->
     if total_weight == 0:
         return 50.0
     
-    return total_score / total_weight
+    # Cap algorithmic scores at 97 to reserve 98-100 for manual curation
+    raw_score = total_score / total_weight
+    return min(raw_score, 97.0)
 
 
-def process_players(df: pd.DataFrame, min_position_players: int = 3) -> pd.DataFrame:
+def process_players(df: pd.DataFrame, min_position_players: int = 3, curation_dir: Path = None) -> pd.DataFrame:
     """Process all players and calculate legend scores."""
     results = []
+    
+    # Load manual curation data
+    manual_legends = {}
+    if curation_dir:
+        manual_legends = load_manual_curation(curation_dir)
+    
+    # Load historical pre-1974 legends
+    historical_legends = {}
+    if curation_dir:
+        historical_file = curation_dir / "historical_legends_pre1974.csv"
+        if historical_file.exists():
+            try:
+                historical_df = pd.read_csv(historical_file)
+                historical_legends = dict(zip(historical_df['player_id'], historical_df['full_name']))
+                logger.info(f"Loaded {len(historical_legends)} historical pre-1974 legends")
+            except Exception as e:
+                logger.warning(f"Error loading historical legends file: {e}")
     
     # Group players by position for percentile calculations
     df['normalized_pos'] = df['primary_pos'].apply(normalize_position)
@@ -381,25 +432,71 @@ def process_players(df: pd.DataFrame, min_position_players: int = 3) -> pd.DataF
         
         for _, row in position_df.iterrows():
             try:
-                # Calculate attribute percentile scores within position
-                attribute_scores = calculate_attribute_scores(row, position_df)
-                
-                # Calculate weighted legend score
-                legend_score = calculate_legend_score(attribute_scores, position)
-                
-                results.append({
-                    'player_id': row['player_id'],
-                    'full_name': row['full_name'],
-                    'position': position,
-                    'legend_score': round(legend_score, 2),
-                    'source_tier': 2  # Rules-based calculation
-                })
+                # Check if player is manually curated
+                player_id = row['player_id']
+                if player_id in manual_legends:
+                    manual_data = manual_legends[player_id]
+                    results.append({
+                        'player_id': player_id,
+                        'full_name': row['full_name'],
+                        'position': position,
+                        'legend_score': manual_data['legend_score'],
+                        'source_tier': 1,  # Manual curation = highest tier
+                        'is_manually_curated': True,
+                        'curation_tier': manual_data['tier'],
+                        'justification': manual_data['justification']
+                    })
+                elif player_id in historical_legends:
+                    # Historical pre-1974 legends get auto score of 98
+                    results.append({
+                        'player_id': player_id,
+                        'full_name': historical_legends[player_id],  # Use name from historical file
+                        'position': position,
+                        'legend_score': 98,
+                        'source_tier': 1,  # Historical legend = highest tier
+                        'is_manually_curated': True,
+                        'curation_tier': None,
+                        'justification': 'Historical pre-1974 legend (auto-assigned 98)'
+                    })
+                else:
+                    # Calculate attribute percentile scores within position
+                    attribute_scores = calculate_attribute_scores(row, position_df)
+                    
+                    # Calculate weighted legend score (algorithmic: 50-97)
+                    legend_score = calculate_legend_score(attribute_scores, position)
+                    
+                    results.append({
+                        'player_id': player_id,
+                        'full_name': row['full_name'],
+                        'position': position,
+                        'legend_score': round(legend_score, 2),
+                        'source_tier': 2,  # Rules-based calculation
+                        'is_manually_curated': False,
+                        'curation_tier': None,
+                        'justification': 'Algorithmic scoring'
+                    })
                 
             except Exception as e:
                 logger.error(
                     f"Error processing {row['player_id']} ({row['full_name']}): {e}"
                 )
                 continue
+    
+    # Handle manually curated legends that weren't found in the main dataset
+    processed_ids = {result['player_id'] for result in results}
+    for player_id, manual_data in manual_legends.items():
+        if player_id not in processed_ids:
+            logger.info(f"Adding manually curated legend not found in dataset: {player_id}")
+            results.append({
+                'player_id': player_id,
+                'full_name': manual_data.get('full_name', f'Unknown Player ({player_id})'),
+                'position': manual_data.get('position', 'Unknown'),
+                'legend_score': manual_data['legend_score'],
+                'source_tier': 1,  # Manual curation = highest tier
+                'is_manually_curated': True,
+                'curation_tier': manual_data['tier'],
+                'justification': f"{manual_data['justification']} (ID not found in dataset)"
+            })
     
     return pd.DataFrame(results)
 
@@ -409,6 +506,9 @@ def process_players(df: pd.DataFrame, min_position_players: int = 3) -> pd.DataF
               help='Input CSV file with player data')
 @click.option('--output', 'output_file', required=True, type=click.Path(),
               help='Output CSV file for legend scores')
+@click.option('--curation-dir', type=click.Path(exists=True), 
+              default='data/manual_curation',
+              help='Directory containing manual curation YAML files')
 @click.option('--min-games', default=16, type=int,
               help='Minimum career games to be eligible (default: 16 for all players)')
 @click.option('--dry-run', is_flag=True,
@@ -416,7 +516,7 @@ def process_players(df: pd.DataFrame, min_position_players: int = 3) -> pd.DataF
 @click.option('--verbose', is_flag=True,
               help='Enable verbose logging')
 def main(
-    input_file: str, output_file: str, min_games: int, dry_run: bool, verbose: bool
+    input_file: str, output_file: str, curation_dir: str, min_games: int, dry_run: bool, verbose: bool
 ):
     """Calculate position-specific legend scores for NFL players."""
     
@@ -443,7 +543,8 @@ def main(
     
     # Calculate legend scores
     logger.info("Calculating position-specific legend scores...")
-    results_df = process_players(df_eligible)
+    curation_path = Path(curation_dir) if curation_dir else None
+    results_df = process_players(df_eligible, curation_dir=curation_path)
     
     if results_df.empty:
         logger.error("No legend scores calculated!")
@@ -466,6 +567,17 @@ def main(
         f"{results_df['legend_score'].max():.1f}"
     )
     logger.info(f"  Mean score: {results_df['legend_score'].mean():.1f}")
+    
+    # Manual vs Algorithmic breakdown
+    if 'is_manually_curated' in results_df.columns:
+        manual_count = results_df['is_manually_curated'].sum()
+        algorithmic_count = len(results_df) - manual_count
+        logger.info(f"  Manual legends: {manual_count}")
+        logger.info(f"  Algorithmic scores: {algorithmic_count}")
+        
+        if manual_count > 0:
+            manual_scores = results_df[results_df['is_manually_curated']]['legend_score']
+            logger.info(f"  Manual score range: {manual_scores.min():.1f} - {manual_scores.max():.1f}")
     
     # Top scorers by position
     logger.info("\nTop scorers by position:")
