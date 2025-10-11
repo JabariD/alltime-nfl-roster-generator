@@ -2,7 +2,7 @@
 
 ## 1. Overview
 
-We want to create a **systematic, programmatic pipeline** that generates an All-Time Madden 26 Legends roster (≈3,500 players). The system uses **Pro Football Reference (PFR)** as the primary data source and translates football stats, honors, and physicals into **Madden attributes**. The design emphasizes:
+I want to create a **systematic, programmatic pipeline** that generates an All-Time Madden YYYY Legends roster (≈3,500 players). The system uses available data sources as the primary data source and translates football stats, honors, and physicals into **Madden attributes**. The design emphasizes:
 
 * **Reproducibility:** Deterministic runs with versioned configs and data snapshots.
 * **Explainability:** Every attribute traceable to data and documented rules.
