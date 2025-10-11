@@ -1,6 +1,6 @@
 # Project-specific
 CLAUDE.md
-.claude/agents
+.claude
 
 # Python
 __pycache__/
