@@ -13,7 +13,7 @@ I want to create a **systematic, programmatic pipeline** that generates an All-T
 ## 2. System Goals
 
 * Build a **canonical player ratings dataset** (FRCS) decoupled from Madden’s shifting schemas.
-* Use **rules + AI/ML hybrid mapping** to convert football data into Madden-style 0–99 ratings.
+* Use **rules + AI/ML hybrid mapping (in version 2)** to convert football data into Madden-style 0–99 ratings.
 * Handle **era normalization** so players are evaluated fairly across history.
 * Allow **position quotas and rankings** to ensure roster balance (\~3,500 total).
 * Support **export adapters** for Madden 26 and future versions.
@@ -91,38 +91,103 @@ Every rating follows a **4-step pipeline**:
 
 ### 6.1 Player Pool Rules (Legend Qualification Paths)
 
-**THREE LEGEND QUALIFICATION PATHS (any path qualifies):**
+**FOUR LEGEND QUALIFICATION PATHS (any path qualifies):**
 
 **PATH 1 - PEAK DOMINANCE** (addresses short amazing careers):
 - ≥3 Pro Bowls in ≤8 seasons (high peer recognition rate)
   * Examples: Quenton Nelson (7 PB/7 seasons), Andrew Luck (4 PB/7 seasons)
 - OR ≥1 All-Pro selection in any span (top 1% at position)
 - OR Hall of Fame flag (automatic legend status)
-- Minimum: >32 total games (injury/early retirement protection)
+- OR Major Award: NFL MVP, DPOY, OPOY, or Super Bowl MVP (transcendent single-season impact)
+- Minimum: ≥32 total games AND ≥3 seasons active (prevents fluke 2-season peaks)
 
 **PATH 2 - SUSTAINED EXCELLENCE** (longevity + recognition):
-- ≥12 seasons + ≥1 Pro Bowl (durability + peer recognition)
+- ≥12 seasons + ≥2 Pro Bowls (durability + peer recognition; changed from 1 PB to avoid flukes)
   * Examples: Andy Lee (19 seasons/3 PB), Duane Brown (16 seasons/5 PB)
-- OR ≥15 seasons regardless of honors (pure longevity value)
-  * Examples: Morten Andersen (26 seasons), Sebastian Janikowski (19 seasons)
+- OR ≥15 seasons + ≥150 games played (pure longevity value with games-played floor)
+  * Examples: Morten Andersen (26 seasons/382 games), Sebastian Janikowski (19 seasons/268 games)
+  * Games-played floor prevents practice squad/backup inflators
 
-**PATH 3 - POSITIONAL IMPACT** (high investment + performance):
-- Draft pick ≤10 + ≥8 seasons active (early investment + durability)
-- OR Top-5 position in career stats + ≥6 seasons (statistical dominance)
-- OR Team continuity: same team ≥10 seasons + playoff appearances
+**PATH 3 - STATISTICAL DOMINANCE** (career achievement):
+- Top-5 all-time in position-specific primary stat (era-adjusted) + ≥6 seasons
+  * QB: passing yards, RB: rushing yards, WR: receiving yards, etc.
+  * Era-adjusted: Pre-1978 stats multiplied by 1.14 (16-game/14-game adjustment)
+  * Examples: Barry Sanders (#3 rush yards), Jerry Rice (#1 rec yards), Tom Brady (#1 pass yards)
+- OR Draft pick ≤10 + ≥8 seasons + ≥1 Pro Bowl/All-Pro (pedigree + longevity + recognition)
+  * Changed: Added honor requirement to prevent busts qualifying
+
+**PATH 4 - AWARD EXCELLENCE** (NEW - transcendent performers):
+- ≥1 of: NFL MVP, Defensive Player of the Year, Offensive Player of the Year, or Super Bowl MVP
+- AND ≥3 seasons active
+- AND ≥32 games played
+- Examples: Terrell Davis (1998 MVP, 2x SB MVP), Kurt Warner (2x MVP, 1 SB MVP), Rich Gannon (2002 MVP)
 
 **IMPLEMENTATION NOTES:**
 - All criteria work for any position (OL, specialists, defense, offense)
-- No subjective "clutch" metrics - only measurable peer/organizational recognition  
+- No subjective "clutch" metrics - only measurable peer/organizational recognition
 - Era-neutral: Pro Bowls are relative to contemporaries in each season
-- Handles both short peaks (Path 1) and long careers (Path 2) objectively
+- Handles both short peaks (Paths 1 & 4) and long careers (Path 2) objectively
+- PATH 3 changes: "Team continuity" criterion REMOVED (too team-dependent, not player-driven)
 
-### 6.2 Peak vs Career Scoring
+**VALIDATION TEST CASES (MUST PASS):**
+- ✅ Patrick Mahomes (6 PB/7 seasons, 3 AP, 2 MVP, 3 SB MVP) → PATH 1 + PATH 4
+- ✅ Justin Jefferson (4 PB/4 seasons, 2 AP) → PATH 1
+- ✅ Quenton Nelson (7 PB/7 seasons, 3 AP) → PATH 1
+- ✅ Terrell Davis (3 PB/7 seasons, 2 AP, 1 MVP, 2 SB MVP) → PATH 1 + PATH 4
+- ✅ Kurt Warner (4 PB/12 seasons, 2 AP, 2 MVP, 1 SB MVP, HOF) → PATH 1 + PATH 2 + PATH 4
+- ❌ Bo Jackson (1 PB/4 seasons, 0 AP, 38 games) → FAILS ALL PATHS (acceptable exclusion)
+- ❌ Malcolm Butler (1 PB/7 seasons, 0 AP) → FAILS ALL PATHS (one play doesn't make a legend)
+
+**THIS IS THE ACTUAL QUALIFICATION LOGIC - NOT JUST CONCEPTUAL:**
+- These 4-path criteria are boolean pass/fail gates applied in Pass 1 (Qualification)
+- Players who pass ANY path proceed to Pass 2 (Attribute Mapping)
+- Qualification is separate from ranking - see Section 6.1.4 below
+- Current implementation in `pipeline/legend_scores.py` uses weighted percentile scoring and DOES NOT match this design - it needs refactoring
+
+**KNOWN GAPS & EDGE CASES:**
+- Pre-1970 Pro Bowl data may be incomplete - use All-Pro as fallback for players with first_season < 1970
+- Bo Jackson (cultural icon, 1 PB, 4 seasons) fails qualification but is subjectively legendary - this is an acceptable trade-off for objective criteria
+- Long snappers pre-2015 have no Pro Bowl opportunities - rely on PATH 2 longevity criterion (15 seasons)
+
+### 6.1.4 Qualification vs. Ranking (Two-Pass Architecture)
+
+**CRITICAL DISTINCTION:**
+
+The pipeline uses a **two-pass system** that separates who qualifies from how qualified players are ordered:
+
+**PASS 1 - QUALIFICATION (Boolean Pass/Fail):**
+- Apply 4-path criteria from Section 6.1 to ALL ~27,000 NFL players
+- Each player either passes (≥1 path satisfied) or fails (no paths satisfied)
+- Output: ~3,500 qualified players (boolean selection, not ranked)
+- Also compute a `qualification_score` metric for each qualified player (used later for validation)
+- Record which path(s) each player satisfied for auditing purposes
+
+**PASS 2 - ATTRIBUTE MAPPING:**
+- **Only run for the ~3,500 qualified players** (performance optimization)
+- Translate stats/honors → 40+ FRCS attributes per player (speed, accuracy, coverage, etc.)
+- Apply position-specific mapping recipes (Section 5)
+- This is expensive computation - don't waste it on players who won't make the roster
+
+**KEY INSIGHT:**
+- Qualification determines WHO is in the pool (binary gate)
+- Ranking (Section 6.2) determines ORDER within qualified pool (for tiebreaks, display, etc.)
+- Attribute mapping determines WHAT their ratings are (gameplay impact)
+
+**VALIDATION USE:**
+- The `qualification_score` from Pass 1 should correlate with final Madden OVR
+- If high qualification_score players have low OVR, investigate mapping logic
+- If low qualification_score players slip through, tighten qualification criteria
+
+### 6.2 Ranking Within Qualified Pool
+
+Once the ~3,500 qualified players are selected, rank them for tiebreaking and display purposes:
 
 * `RankScore = w1 * PeakScore + w2 * CareerScore + w3 * EraDominance + w4 * HonorsIndex`
 * Peak = top-3 consecutive seasons.
 * Career = AV, Weighted AV, HOF monitor, honors.
 * Era dominance = z-scores of rate+ metrics vs peers.
+
+**NOTE:** This RankScore is for ORDERING within the qualified pool, NOT for qualification itself. Do not use weighted percentile scoring for qualification - use the boolean 4-path criteria from Section 6.1.
 
 ### 6.3 Quotas (\~3,500 total)
 
@@ -172,16 +237,25 @@ Adapters are versioned per Madden release (26, 27, …). FRCS stays stable.
 
 ## 9. Pipeline Flow
 
-1. **Ingest:** Load PFR exports, normalize identities.
-2. **Compute season metrics:** Per player-season by position.
-3. **Era normalization:** Percentiles/z-scores.
-4. **Peak/career scoring:** Build RankScore.
-5. **Roster selection:** Apply quotas & cutoffs.
-6. **Attribute mapping:** Apply recipes/ML → FRCS ratings.
-7. **Archetyping:** Cluster & modify attributes.
-8. **Validation:** Sanity checks, outlier detection.
-9. **Export:** Apply adapter → game schema CSV.
-10. **Manifest:** Store FRCS version, config hash, adapter version.
+**UPDATED TO REFLECT TWO-PASS ARCHITECTURE:**
+
+1. **Ingest:** Load nflverse data, normalize identities.
+2. **Normalize:** Clean data, resolve identities, assign era buckets.
+3. **Qualification (PASS 1 - Boolean):** Apply 4-path criteria to ALL ~27,000 players → select ~3,500 qualified legends.
+4. **Apply quotas:** Ensure position balance within qualified pool (QB 180, RB 420, etc.).
+5. **Compute season metrics:** Per player-season stats (ONLY for qualified ~3,500 players).
+6. **Peak/career scoring:** Build RankScore for ordering within qualified pool.
+7. **Attribute mapping (PASS 2):** Apply recipes/ML → FRCS ratings (40+ attributes per qualified player).
+8. **Archetyping:** Cluster & modify attributes based on play style.
+9. **Validation:** Sanity checks, outlier detection, qualification_score vs OVR correlation.
+10. **Export:** Apply adapter → game schema CSV.
+11. **Manifest:** Store FRCS version, config hash, adapter version.
+
+**KEY CHANGES FROM ORIGINAL:**
+- Qualification (step 3) now happens BEFORE attribute mapping (step 7)
+- Expensive computations (steps 5-7) only run on ~3,500 qualified players, not all 27,000
+- Quotas (step 4) applied after boolean qualification, before ranking/mapping
+- Added PATH 4 (Award Excellence) to catch MVP/DPOY/SB MVP winners with short careers
 
 ---
 
@@ -242,13 +316,14 @@ madden-roster/
 
   pipeline/
     __init__.py
-    ingest_nflverse.py     # Load nflverse datasets, build unified players_index
-    normalize.py           # Clean, dedupe, identity resolution; era bucketing
-    peaks.py               # Peak-window detection and scoring
-    rank.py                # Combine peak/career/era scores → RankScore; apply quotas
-    ratings/
+    01_ingest/
+      ingest_nflverse.py   # Load nflverse datasets, build unified players_index
+    02_qualification/
+      qualify.py           # Apply 4-path boolean criteria (PASS 1)
+      legend_scores.py     # Compute qualification_score for validation (NEEDS REFACTOR)
+    03_attributes/
       __init__.py
-      qb.py                # QB attribute recipes (rules + ML blend)
+      qb.py                # QB FRCS attribute recipes (PASS 2, rules + ML blend)
       rb.py
       wr.py
       te.py
@@ -258,12 +333,18 @@ madden-roster/
       db.py
       k_p_ret.py
       common.py            # Shared mappers (speed, injury, stamina, etc.)
-    ai/
+    04_enrichment/
       impute.py            # ML imputers for missing combine/physicals
-      predict_attributes.py# LightGBM/CatBoost models predicting ratings from stats
-      cluster_labels.py    # Archetype clustering + LLM labeler
-      audits.py            # LLM/heuristics for outlier & fairness audits
-    export.py              # FRCS → Adapter → CSV exporter
+      archetypes.py        # Archetype clustering + LLM labeler
+      equipment.py         # Equipment, skills, packages (Phase 2)
+    05_export/
+      export.py            # FRCS → Adapter → CSV exporter
+    validation/
+      audits.py            # Outlier & fairness audits, qualification_score vs OVR checks
+      spot_checks.py       # Golden player tests, distribution plots
+    normalize.py           # Clean, dedupe, identity resolution; era bucketing (imported by 01_ingest)
+    peaks.py               # Peak-window detection and scoring (imported by 02_qualification)
+    rank.py                # Combine peak/career/era scores → RankScore; apply quotas (imported by 02_qualification)
 
   notebooks/
     01_eda_pfr.ipynb       # Explore PFR structure/columns
@@ -314,12 +395,13 @@ madden-roster/
 
 **pipeline/**
 
-* *ingest\_nflverse.py*: Functions to load nflverse datasets and build unified `players_index.csv` from multiple data sources.
-* *normalize.py*: Identity cleanup, name diacritics, position harmonization, era buckets.
-* *peaks.py / rank.py*: Peak window finder + composite ranking and quota allocation.
-* *ratings/*: Attribute mappers by position; split into small testable functions (e.g., `map_wr_speed(row, era_ctx)`).
-* *ai/*: ML components (imputers, predictors, clustering, audits) gated by configs so you can disable easily.
-* *export.py*: Loads snapshot + adapter YAML → writes game CSV and export manifest.
+* *01\_ingest/*: Functions to load nflverse datasets and build unified `players_index.csv` from multiple data sources.
+* *02\_qualification/*: **PASS 1** - Apply 4-path boolean criteria; compute qualification_score for validation. **NOTE:** `legend_scores.py` currently uses weighted percentile logic and needs refactoring to match 4-path design.
+* *03\_attributes/*: **PASS 2** - FRCS attribute mappers by position; split into small testable functions (e.g., `map_wr_speed(row, era_ctx)`). Only runs for ~3,500 qualified players.
+* *04\_enrichment/*: Archetypes, imputers, equipment (Phase 2 features).
+* *05\_export/*: Loads snapshot + adapter YAML → writes game CSV and export manifest.
+* *validation/*: Audits, spot checks, qualification_score vs OVR correlation tests.
+* *normalize.py, peaks.py, rank.py*: Shared utility modules imported by qualification and enrichment stages.
 
 **notebooks/**
 
