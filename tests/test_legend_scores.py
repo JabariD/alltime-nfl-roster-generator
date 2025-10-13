@@ -1,7 +1,7 @@
 import pytest
 import pandas as pd
 import numpy as np
-from pipeline.legend_scores import (
+from pipeline.qualification.legend_scores import (
     normalize_position,
     percentile_score,
     calculate_attribute_scores,
