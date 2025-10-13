@@ -1,0 +1,17 @@
+{
+  "ingest_version": "1.0.0",
+  "timestamp": "2025-10-13T03:13:15.567930",
+  "outputs": {
+    "players_index": "data/raw/players_index.csv",
+    "player_data_profiles": "data/raw/player_data_profiles.parquet"
+  },
+  "counts": {
+    "players": 100,
+    "profiles": 24317
+  },
+  "config": {
+    "full_build": false,
+    "verbose": true,
+    "era_config": "config/eras.yaml"
+  }
+}

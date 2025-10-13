@@ -45,10 +45,10 @@ This project uses a **two-pass architecture** to build a ~3,500 player All-Time 
 
 **Deliverables**:
 - ✅ Implemented `scripts/build_players_index.py` (730 lines with logging, error handling, validation)
-- ✅ Loaded nflverse datasets: players, rosters (1999-2024), combine (1987-2024), draft (1970-2024)
+- ✅ Loaded nflverse datasets: players, rosters (1999-2024), combine (1987-2024), draft (1970-2024), nextgen stats
 - ✅ Aggregated career stats (seasonal), playoff stats, defensive stats (tackles, sacks, INTs)
 - ✅ Merged honors (Pro Bowls, All-Pro, HOF), physical measurements (height, weight, 40-time, bench, vertical)
-- ✅ Saved CSV with 38 columns: identity, career spans, offensive/defensive/playoff stats, honors, combine data
+- ✅ Saved CSV with 38 columns: identity, career spans, offensive/defensive/playoff stats, honors, combine data, next gen stats.
 - ✅ Manual curation files: `qb_legends.yaml` (26 QBs), `historical_legends_pre1974.csv` (163 players)
 
 **Acceptance Criteria**:

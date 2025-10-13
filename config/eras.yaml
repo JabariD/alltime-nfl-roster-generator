@@ -1,0 +1,223 @@
+# Historical Era Definitions for Cross-Era Normalization
+#
+# Eras defined by significant rule changes and data availability.
+# Used for era_bucket assignment and era-aware attribute mapping.
+
+eras:
+  dead_ball:
+    name: "Dead Ball Era"
+    years: [1920, 1945]
+    description: "Early NFL with sparse data and run-heavy offenses"
+
+    # Data characteristics
+    data_richness: 0.15  # 15% of modern data availability
+    available_metrics:
+      - seasonal_totals  # Very basic yards, TDs
+      - championships
+      - all_pro_selections  # When available
+
+    missing_metrics:
+      - weekly_stats
+      - tackles
+      - sacks
+      - combine_data
+      - advanced_stats
+
+    # Era context for normalization
+    rule_context:
+      - "No forward pass restrictions after 1933"
+      - "12-game seasons until 1947"
+      - "Two-way players common"
+      - "Limited substitution rules"
+
+    # Source tier adjustments
+    tier_weights:
+      TIER_1: 0.0   # No combine data
+      TIER_2: 0.0   # No advanced metrics
+      TIER_3: 0.3   # Limited basic stats
+      TIER_4: 0.7   # Heavily rely on honors
+
+  post_wwii:
+    name: "Post-WWII Traditional Football"
+    years: [1946, 1977]
+    description: "Traditional football with growing data coverage"
+
+    data_richness: 0.35  # 35% of modern data
+    available_metrics:
+      - seasonal_totals
+      - all_pro_selections
+      - pro_bowls
+      - championships
+      - basic_box_scores  # More detailed than dead ball
+
+    missing_metrics:
+      - sacks  # Not tracked until 1982
+      - tackles  # Not official until 1994
+      - combine_data  # Rare
+      - advanced_stats
+
+    rule_context:
+      - "12-game season (1947-1960)"
+      - "14-game season (1961-1977)"
+      - "Free substitution allowed (1950)"
+      - "Face mask required (1956)"
+
+    tier_weights:
+      TIER_1: 0.05  # Rare combine data
+      TIER_2: 0.0   # No advanced metrics
+      TIER_3: 0.50  # Better basic stats
+      TIER_4: 0.45  # Still rely on honors
+
+  passing_revolution:
+    name: "Passing Revolution Era"
+    years: [1978, 1993]
+    description: "Mel Blount rule opens passing game"
+
+    data_richness: 0.55  # 55% of modern data
+    available_metrics:
+      - detailed_box_scores
+      - sacks  # Tracked from 1982
+      - all_pro_selections
+      - pro_bowls
+      - combine_data  # Starting to be widespread
+
+    missing_metrics:
+      - tackles  # Still not official
+      - advanced_stats
+      - NextGen_stats
+
+    rule_context:
+      - "16-game season (1978+)"
+      - "Mel Blount rule (1978) - defensive contact limits"
+      - "Sack tracking begins (1982)"
+      - "Instant replay introduced (1986-1991)"
+
+    tier_weights:
+      TIER_1: 0.30  # Combine data more common
+      TIER_2: 0.0   # No advanced metrics yet
+      TIER_3: 0.50  # Good basic stats
+      TIER_4: 0.20  # Less reliance on honors
+
+  salary_cap:
+    name: "Salary Cap & Parity Era"
+    years: [1994, 2003]
+    description: "Salary cap creates parity, official tackle stats"
+
+    data_richness: 0.70  # 70% of modern data
+    available_metrics:
+      - detailed_box_scores
+      - tackles  # Official from 1994
+      - sacks
+      - tfls
+      - passes_defended
+      - combine_data  # Widespread
+      - basic_weekly_stats
+
+    missing_metrics:
+      - advanced_stats  # EPA, PACR, etc.
+      - NextGen_stats
+      - PFF_grades  # PFF starts 2006
+
+    rule_context:
+      - "Salary cap introduced (1994)"
+      - "Two-point conversion (1994)"
+      - "Instant replay returns (1999)"
+      - "Illegal contact emphasis (2004)"
+
+    tier_weights:
+      TIER_1: 0.40  # Good combine coverage
+      TIER_2: 0.05  # Very limited advanced stats
+      TIER_3: 0.45  # Excellent basic stats
+      TIER_4: 0.10  # Minimal honors reliance
+
+  modern_pass_happy:
+    name: "Modern Pass-Happy Era"
+    years: [2004, 2015]
+    description: "Illegal contact emphasis, passing explosion"
+
+    data_richness: 0.85  # 85% of modern data
+    available_metrics:
+      - detailed_box_scores
+      - tackles
+      - sacks
+      - tfls
+      - passes_defended
+      - combine_data
+      - weekly_stats
+      - PFF_grades  # From 2006
+      - air_yards  # From 2009
+      - snap_counts
+
+    missing_metrics:
+      - NextGen_stats  # Not until 2016
+      - EPA  # Limited coverage
+
+    rule_context:
+      - "Illegal contact emphasis (2004)"
+      - "Defenseless receiver rules (2005)"
+      - "Tom Brady rule (2009) - low hits on QB"
+      - "Kickoff moved to 35-yard line (2011)"
+
+    tier_weights:
+      TIER_1: 0.45  # Full combine coverage
+      TIER_2: 0.25  # Some advanced stats
+      TIER_3: 0.25  # Comprehensive basic stats
+      TIER_4: 0.05  # Minimal honors reliance
+
+  analytics_era:
+    name: "Analytics Era"
+    years: [2016, 2024]
+    description: "NextGen stats, EPA, complete data coverage"
+
+    data_richness: 1.0  # 100% - most complete data
+    available_metrics:
+      - detailed_box_scores
+      - tackles
+      - sacks
+      - tfls
+      - passes_defended
+      - combine_data
+      - weekly_stats
+      - PFF_grades
+      - air_yards
+      - snap_counts
+      - NextGen_stats  # Separation, route tracking, speed
+      - EPA
+      - PACR
+      - target_share
+      - WOPR
+      - advanced_rushing_metrics
+
+    missing_metrics: []  # Most complete era
+
+    rule_context:
+      - "17-game season (2021)"
+      - "Targeting rules strengthened"
+      - "Roughing the passer emphasis"
+      - "NextGen Stats tracking (2016)"
+
+    tier_weights:
+      TIER_1: 0.45  # Full combine coverage
+      TIER_2: 0.40  # Rich advanced metrics
+      TIER_3: 0.15  # Comprehensive basic stats (less weight needed)
+      TIER_4: 0.0   # No honors reliance needed
+
+# Era Fairness Adjustments
+#
+# Bonuses applied to offset data scarcity (see design.md Section 5.1)
+era_bonuses:
+  dead_ball: 5        # Significant boost for sparse data
+  post_wwii: 3        # Moderate boost
+  passing_revolution: 0
+  salary_cap: 0
+  modern_pass_happy: 0
+  analytics_era: 0
+
+# Confidence Penalties by Source Tier
+#
+# Applied to reflect measurement uncertainty (NOT player quality)
+tier_confidence_penalties:
+  TIER_1: 0   # Direct measurement (40-time) - no penalty
+  TIER_2: 2   # Rich stats (NextGen, EPA) - slight uncertainty
+  TIER_3: 4   # Basic stats (yards, TDs) - more uncertainty
+  TIER_4: 6   # Honors proxy (All-Pro) - most uncertainty
