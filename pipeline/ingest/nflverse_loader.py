@@ -12,7 +12,7 @@ from typing import List, Optional, Tuple
 
 import pandas as pd
 
-from pipeline.ingest.types import NFLVerseLoadError
+from pipeline.ingest.ingest_types import NFLVerseLoadError
 
 logger = logging.getLogger(__name__)
 

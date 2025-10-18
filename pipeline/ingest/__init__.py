@@ -26,7 +26,7 @@ from pipeline.ingest.era_bucketer import (
 )
 from pipeline.ingest.nflverse_loader import NFLVerseLoader, test_nflverse_connection
 from pipeline.ingest.players_index import build_players_index
-from pipeline.ingest.types import (
+from pipeline.ingest.ingest_types import (
     CareerStats,
     CombineData,
     DraftInfo,

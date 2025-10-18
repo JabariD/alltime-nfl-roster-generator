@@ -5,7 +5,7 @@ Extracted from original build_players_index.py script for modularity.
 """
 
 import logging
-from typing import Any, Dict
+from typing import Any
 
 import pandas as pd
 
@@ -41,7 +41,7 @@ def aggregate_career_stats(seasonal_data: pd.DataFrame) -> pd.DataFrame:
         raise ValueError(f"Missing required columns: {missing}")
 
     # Define aggregation rules
-    stat_columns: Dict[str, Any] = {
+    stat_columns: dict[str, Any] = {
         "games": "sum",
         "passing_yards": "sum",
         "rushing_yards": "sum",
@@ -129,7 +129,7 @@ def aggregate_playoff_stats(playoff_data: pd.DataFrame) -> pd.DataFrame:
         raise ValueError(f"Missing required columns: {missing}")
 
     # Define aggregation rules
-    stat_columns: Dict[str, str] = {
+    stat_columns: dict[str, str] = {
         "games": "sum",
         "passing_yards": "sum",
         "rushing_yards": "sum",
@@ -175,6 +175,7 @@ def merge_player_datasets(
     playoff_stats: pd.DataFrame,
     draft: pd.DataFrame,
     combine: pd.DataFrame,
+    ngs_stats: pd.DataFrame | None = None,
 ) -> pd.DataFrame:
     """Merge all player datasets into comprehensive DataFrame.
 
@@ -187,6 +188,7 @@ def merge_player_datasets(
         playoff_stats: Aggregated playoff statistics
         draft: Draft and honors data
         combine: NFL Combine measurements
+        ngs_stats: Next Gen Stats (2016+) - optional
 
     Returns:
         Enhanced players DataFrame with all merged data columns
@@ -296,6 +298,28 @@ def merge_player_datasets(
 
         enhanced = enhanced.merge(
             combine_subset, left_on="pfr_id", right_on="pfr_id", how="left"
+        )
+
+    # Merge NGS data (left join on gsis_id)
+    if ngs_stats is not None and not ngs_stats.empty:
+        logger.info("Merging Next Gen Stats...")
+
+        # Join on player_gsis_id -> gsis_id
+        enhanced = enhanced.merge(
+            ngs_stats, left_on="gsis_id", right_on="player_gsis_id", how="left"
+        )
+
+        # Drop redundant player_gsis_id column
+        if "player_gsis_id" in enhanced.columns:
+            enhanced = enhanced.drop(columns=["player_gsis_id"])
+
+        # Log coverage
+        ngs_cols = [col for col in enhanced.columns if col.startswith("ngs_")]
+        ngs_coverage = enhanced[ngs_cols].notna().any(axis=1).sum()
+        coverage_pct = 100 * ngs_coverage / len(enhanced)
+        logger.info(
+            f"NGS coverage: {ngs_coverage}/{len(enhanced)} players "
+            f"({coverage_pct:.1f}%)"
         )
 
     logger.info(

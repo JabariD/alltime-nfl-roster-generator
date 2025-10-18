@@ -11,7 +11,7 @@ from typing import Any, Dict
 import pandas as pd
 import yaml
 
-from pipeline.ingest.types import EraBucket
+from pipeline.ingest.ingest_types import EraBucket
 
 logger = logging.getLogger(__name__)
 

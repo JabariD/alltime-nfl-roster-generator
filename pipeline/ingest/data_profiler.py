@@ -9,7 +9,7 @@ from typing import List
 
 import pandas as pd
 
-from pipeline.ingest.types import SourceTier
+from pipeline.ingest.ingest_types import SourceTier
 
 logger = logging.getLogger(__name__)
 

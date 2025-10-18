@@ -72,5 +72,11 @@ Thumbs.db
 *.temp
 .tmp/
 
-# Data exports (throwaway per CLAUDE.md)
-data/exports/
+# Data (per DATA_STRUCTURE.md)
+data/test/          # Test runs are ephemeral
+data/exports/       # Exports are throwaway/regenerable
+docs/research/      # Research artifacts are temporary
+
+# Keep production data and snapshots
+!data/raw/
+!data/snapshots/

@@ -8,9 +8,9 @@ Coordinates all ingest modules to produce:
 
 import json
 import logging
-from datetime import datetime
+from datetime import datetime, timezone
 from pathlib import Path
-from typing import Any, Dict
+from typing import Any
 
 import click
 import pandas as pd
@@ -23,6 +23,7 @@ from pipeline.ingest.aggregators import (
 from pipeline.ingest.data_profiler import generate_player_data_profiles
 from pipeline.ingest.era_bucketer import assign_era_bucket
 from pipeline.ingest.nflverse_loader import NFLVerseLoader, test_nflverse_connection
+from pipeline.ingest.ngs_loader import load_ngs_data
 
 logger = logging.getLogger(__name__)
 
@@ -58,103 +59,120 @@ def build_output_schema(enhanced_players: pd.DataFrame) -> pd.DataFrame:
     """
     logger.info("Building output schema...")
 
-    return pd.DataFrame(
-        {
-            # Identity
-            "player_id": enhanced_players["gsis_id"],
-            "full_name": enhanced_players["display_name"],
-            "primary_pos": enhanced_players["position"],
-            "college": enhanced_players["college_name"],
-            "birth_date": enhanced_players["birth_date"],
-            # Career span (fallback chain: seasonal → draft → bio)
-            "first_year": enhanced_players["rookie_season"].fillna(
-                enhanced_players["first_year"].fillna(
-                    enhanced_players.get("draft_season", pd.NA)
-                )
-            ),
-            "last_year": enhanced_players["last_season"].fillna(
-                enhanced_players["last_year"].fillna(enhanced_players.get("to", pd.NA))
-            ),
-            "career_seasons": enhanced_players["career_seasons"]
-            .fillna(enhanced_players.get("seasons_started", 0).fillna(0))
-            .astype(int),
-            "total_career_games": enhanced_players["total_career_games"]
-            .fillna(enhanced_players.get("draft_games", 0).fillna(0))
-            .astype(int),
-            # Offensive stats - use seasonal data first, then draft data
-            "career_passing_yards": enhanced_players["career_passing_yards"]
-            .fillna(enhanced_players.get("draft_pass_yards", 0).fillna(0))
-            .astype(int),
-            "career_rushing_yards": enhanced_players["career_rushing_yards"]
-            .fillna(enhanced_players.get("draft_rush_yards", 0).fillna(0))
-            .astype(int),
-            "career_receiving_yards": enhanced_players["career_receiving_yards"]
-            .fillna(enhanced_players.get("draft_rec_yards", 0).fillna(0))
-            .astype(int),
-            # Touchdown stats
-            "career_passing_tds": enhanced_players["career_passing_tds"]
-            .fillna(enhanced_players.get("draft_pass_tds", 0).fillna(0))
-            .astype(int),
-            "career_rushing_tds": enhanced_players["career_rushing_tds"]
-            .fillna(enhanced_players.get("draft_rush_tds", 0).fillna(0))
-            .astype(int),
-            "career_receiving_tds": enhanced_players["career_receiving_tds"]
-            .fillna(enhanced_players.get("draft_rec_tds", 0).fillna(0))
-            .astype(int),
-            "career_tds": enhanced_players["career_tds"]
-            .fillna(
-                enhanced_players.get("draft_pass_tds", 0).fillna(0)
-                + enhanced_players.get("draft_rush_tds", 0).fillna(0)
-                + enhanced_players.get("draft_rec_tds", 0).fillna(0)
+    # Extract all NGS columns if present
+    ngs_columns = {
+        col: enhanced_players.get(col, pd.NA)
+        for col in enhanced_players.columns
+        if col.startswith("ngs_")
+    }
+
+    # Build base schema
+    base_schema = {
+        # Identity
+        "player_id": enhanced_players["gsis_id"],
+        "full_name": enhanced_players["display_name"],
+        "primary_pos": enhanced_players["position"],
+        "college": enhanced_players["college_name"],
+        "birth_date": enhanced_players["birth_date"],
+        # Career span (fallback chain: seasonal → draft → bio)
+        "first_year": enhanced_players["rookie_season"].fillna(
+            enhanced_players["first_year"].fillna(
+                enhanced_players.get("draft_season", pd.NA)
             )
-            .astype(int),
-            # Playoff stats
-            "playoff_games": enhanced_players["playoff_games"].fillna(0).astype(int),
-            "playoff_passing_yards": enhanced_players["playoff_passing_yards"]
-            .fillna(0)
-            .astype(int),
-            "playoff_rushing_yards": enhanced_players["playoff_rushing_yards"]
-            .fillna(0)
-            .astype(int),
-            "playoff_receiving_yards": enhanced_players["playoff_receiving_yards"]
-            .fillna(0)
-            .astype(int),
-            "playoff_passing_tds": enhanced_players["playoff_passing_tds"]
-            .fillna(0)
-            .astype(int),
-            "playoff_rushing_tds": enhanced_players["playoff_rushing_tds"]
-            .fillna(0)
-            .astype(int),
-            "playoff_receiving_tds": enhanced_players["playoff_receiving_tds"]
-            .fillna(0)
-            .astype(int),
-            "playoff_tds": enhanced_players["playoff_tds"].fillna(0).astype(int),
-            # Defensive stats
-            "def_solo_tackles": enhanced_players.get("def_solo_tackles", 0)
-            .fillna(0)
-            .astype(int),
-            "def_sacks": enhanced_players.get("def_sacks", 0.0).fillna(0.0),
-            "def_ints": enhanced_players.get("def_ints", 0).fillna(0).astype(int),
-            # Draft and honors
-            "draft_pick": enhanced_players.get("pick", 999).fillna(999).astype(int),
-            "pro_bowls": enhanced_players.get("probowls", 0).fillna(0).astype(int),
-            "all_pros": enhanced_players.get("allpro", 0).fillna(0).astype(int),
-            "hof_flag": enhanced_players.get("hof", False).fillna(False).astype(bool),
-            # Physical/Combine data
-            "height_in": enhanced_players["height"].fillna(
-                enhanced_players.get("ht", pd.NA)
-            ),
-            "weight_lb": enhanced_players["weight"].fillna(
-                enhanced_players.get("wt", pd.NA)
-            ),
-            "forty_time": enhanced_players.get("forty", pd.NA),
-            "bench_press": enhanced_players.get("bench", pd.NA),
-            "vertical_jump": enhanced_players.get("vertical", pd.NA),
-            "broad_jump": enhanced_players.get("broad_jump", pd.NA),
-            "three_cone": enhanced_players.get("cone", pd.NA),
-            "twenty_shuttle": enhanced_players.get("shuttle", pd.NA),
-        }
-    )
+        ),
+        "last_year": enhanced_players["last_season"].fillna(
+            enhanced_players["last_year"].fillna(enhanced_players.get("to", pd.NA))
+        ),
+        "career_seasons": enhanced_players["career_seasons"]
+        .fillna(enhanced_players.get("seasons_started", 0).fillna(0))
+        .astype(int),
+        "total_career_games": enhanced_players["total_career_games"]
+        .fillna(enhanced_players.get("draft_games", 0).fillna(0))
+        .astype(int),
+        # Offensive stats - use seasonal data first, then draft data
+        "career_passing_yards": enhanced_players["career_passing_yards"]
+        .fillna(enhanced_players.get("draft_pass_yards", 0).fillna(0))
+        .astype(int),
+        "career_rushing_yards": enhanced_players["career_rushing_yards"]
+        .fillna(enhanced_players.get("draft_rush_yards", 0).fillna(0))
+        .astype(int),
+        "career_receiving_yards": enhanced_players["career_receiving_yards"]
+        .fillna(enhanced_players.get("draft_rec_yards", 0).fillna(0))
+        .astype(int),
+        # Touchdown stats
+        "career_passing_tds": enhanced_players["career_passing_tds"]
+        .fillna(enhanced_players.get("draft_pass_tds", 0).fillna(0))
+        .astype(int),
+        "career_rushing_tds": enhanced_players["career_rushing_tds"]
+        .fillna(enhanced_players.get("draft_rush_tds", 0).fillna(0))
+        .astype(int),
+        "career_receiving_tds": enhanced_players["career_receiving_tds"]
+        .fillna(enhanced_players.get("draft_rec_tds", 0).fillna(0))
+        .astype(int),
+        "career_tds": enhanced_players["career_tds"]
+        .fillna(
+            enhanced_players.get("draft_pass_tds", 0).fillna(0)
+            + enhanced_players.get("draft_rush_tds", 0).fillna(0)
+            + enhanced_players.get("draft_rec_tds", 0).fillna(0)
+        )
+        .astype(int),
+        # Playoff stats
+        "playoff_games": enhanced_players["playoff_games"].fillna(0).astype(int),
+        "playoff_passing_yards": enhanced_players["playoff_passing_yards"]
+        .fillna(0)
+        .astype(int),
+        "playoff_rushing_yards": enhanced_players["playoff_rushing_yards"]
+        .fillna(0)
+        .astype(int),
+        "playoff_receiving_yards": enhanced_players["playoff_receiving_yards"]
+        .fillna(0)
+        .astype(int),
+        "playoff_passing_tds": enhanced_players["playoff_passing_tds"]
+        .fillna(0)
+        .astype(int),
+        "playoff_rushing_tds": enhanced_players["playoff_rushing_tds"]
+        .fillna(0)
+        .astype(int),
+        "playoff_receiving_tds": enhanced_players["playoff_receiving_tds"]
+        .fillna(0)
+        .astype(int),
+        "playoff_tds": enhanced_players["playoff_tds"].fillna(0).astype(int),
+        # Defensive stats
+        "def_solo_tackles": enhanced_players.get("def_solo_tackles", 0)
+        .fillna(0)
+        .astype(int),
+        "def_sacks": enhanced_players.get("def_sacks", 0.0).fillna(0.0),
+        "def_ints": enhanced_players.get("def_ints", 0).fillna(0).astype(int),
+        # Draft and honors
+        "draft_pick": enhanced_players.get("pick", 999).fillna(999).astype(int),
+        "pro_bowls": enhanced_players.get("probowls", 0).fillna(0).astype(int),
+        "all_pros": enhanced_players.get("allpro", 0).fillna(0).astype(int),
+        "hof_flag": enhanced_players.get("hof", False).fillna(False).astype(bool),
+        # Physical/Combine data
+        "height_in": enhanced_players["height"].fillna(
+            enhanced_players.get("ht", pd.NA)
+        ),
+        "weight_lb": enhanced_players["weight"].fillna(
+            enhanced_players.get("wt", pd.NA)
+        ),
+        "forty_time": enhanced_players.get("forty", pd.NA),
+        "bench_press": enhanced_players.get("bench", pd.NA),
+        "vertical_jump": enhanced_players.get("vertical", pd.NA),
+        "broad_jump": enhanced_players.get("broad_jump", pd.NA),
+        "three_cone": enhanced_players.get("cone", pd.NA),
+        "twenty_shuttle": enhanced_players.get("shuttle", pd.NA),
+    }
+
+    # Merge base schema with NGS columns
+    output_schema = {**base_schema, **ngs_columns}
+
+    result = pd.DataFrame(output_schema)
+
+    # Log NGS column inclusion
+    if ngs_columns:
+        logger.info(f"Included {len(ngs_columns)} NGS columns in output schema")
+
+    return result
 
 
 def apply_filtering(final_index: pd.DataFrame, full_build: bool) -> pd.DataFrame:
@@ -204,7 +222,7 @@ def apply_filtering(final_index: pd.DataFrame, full_build: bool) -> pd.DataFrame
 
 
 def generate_manifest(
-    output_dir: Path, players_count: int, profiles_count: int, config: Dict[str, Any]
+    output_dir: Path, players_count: int, profiles_count: int, config: dict[str, Any]
 ) -> None:
     """Generate ingest manifest with run metadata.
 
@@ -216,7 +234,7 @@ def generate_manifest(
     """
     manifest = {
         "ingest_version": "1.0.0",
-        "timestamp": datetime.utcnow().isoformat(),
+        "timestamp": datetime.now(timezone.utc).isoformat(),
         "outputs": {
             "players_index": str(output_dir / "players_index.csv"),
             "player_data_profiles": str(output_dir / "player_data_profiles.parquet"),
@@ -237,20 +255,20 @@ def generate_manifest(
     "--out",
     "-o",
     type=click.Path(),
-    default="data/raw",
-    help="Output directory for players_index.csv and profiles",
+    default=None,
+    help="Output directory (default: data/raw for --full, timestamped data/test/ otherwise)",
 )
 @click.option(
-    "--test-only",
+    "--test",
     "-t",
     is_flag=True,
-    help="Test nflverse connection only, skip index building",
+    help="Quick test run (100 players, recent data, timestamped output in data/test/)",
 )
 @click.option(
     "--full",
     "-f",
     is_flag=True,
-    help="Build complete historical dataset (1970-2024) vs recent sample",
+    help="Full production build (all players, 1970-2024, overwrites data/raw/)",
 )
 @click.option(
     "--verbose",
@@ -258,8 +276,13 @@ def generate_manifest(
     is_flag=True,
     help="Enable debug-level logging for detailed output",
 )
+@click.option(
+    "--connection-test",
+    is_flag=True,
+    help="Test nflverse connection only, skip index building",
+)
 def build_players_index(
-    out: str, test_only: bool, full: bool, verbose: bool
+    out: str | None, test: bool, full: bool, verbose: bool, connection_test: bool
 ) -> None:
     """Build comprehensive NFL player index from nflverse data sources.
 
@@ -268,26 +291,69 @@ def build_players_index(
     - player_data_profiles.parquet: Data availability metadata (FRCS 4.3)
     - ingest_manifest.json: Run metadata
 
+    Examples:
+        # Quick test (100 players, timestamped output)
+        $ python pipeline/ingest/players_index.py --test
+
+        # Full production build (overwrites data/raw/)
+        $ python pipeline/ingest/players_index.py --full
+
+        # Custom output location
+        $ python pipeline/ingest/players_index.py --full --out data/custom/
+
     Args:
-        out: Output directory path
-        test_only: Only test data connection, don't build index
-        full: Build complete historical dataset vs recent sample
+        out: Output directory (default: data/raw for --full, timestamped data/test/ for --test)
+        test: Quick test run with recent data only
+        full: Full production build with all historical data
         verbose: Enable debug logging
+        connection_test: Only test data connection, don't build index
     """
     setup_logging(verbose)
-    output_dir = Path(out)
+
+    # Validate flags
+    if test and full:
+        logger.error("Cannot specify both --test and --full. Choose one.")
+        return
+
+    if not test and not full and not connection_test:
+        logger.error("Must specify --test, --full, or --connection-test")
+        logger.info("  --test: Quick validation (100 players, recent data)")
+        logger.info("  --full: Production build (all players, 1970-2024)")
+        logger.info("  --connection-test: Test nflverse connection only")
+        return
+
+    # Determine output directory
+    if out:
+        output_dir = Path(out)
+    elif full:
+        output_dir = Path("data/raw")
+    else:
+        # Test mode: create timestamped directory
+        from datetime import datetime
+        timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+        output_dir = Path(f"data/test/{timestamp}")
+
     output_dir.mkdir(parents=True, exist_ok=True)
 
-    scope = "FULL BUILD" if full else "Test Sample"
-    logger.info(f"=== nflverse-data Player Index Builder ({scope}) ===")
+    # Determine scope
+    if full:
+        scope = "FULL PRODUCTION BUILD"
+        logger.info(f"=== {scope} ===")
+        logger.info(f"Output: {output_dir}")
+        logger.info("This will overwrite existing data in the output directory.")
+    else:
+        scope = "TEST RUN"
+        logger.info(f"=== {scope} ===")
+        logger.info(f"Output: {output_dir}")
+        logger.info("Limited to 100 players with recent data (2022-2024)")
 
     # Test connection first
     if not test_nflverse_connection():
         logger.error("Connection test failed. Check nfl-data-py installation.")
         return
 
-    if test_only:
-        logger.info("Test-only mode complete.")
+    if connection_test:
+        logger.info("Connection test complete.")
         return
 
     # Build player index
@@ -303,9 +369,18 @@ def build_players_index(
         career_stats = aggregate_career_stats(seasonal)
         playoff_stats = aggregate_playoff_stats(playoff)
 
+        # Load NGS data (2016+) with graceful degradation
+        ngs_stats = None
+        try:
+            ngs_years = list(range(2016, 2025))  # NGS data available 2016+
+            logger.info("Loading Next Gen Stats...")
+            ngs_stats = load_ngs_data(ngs_years)
+        except Exception as e:
+            logger.warning(f"Failed to load NGS data (continuing without it): {e}")
+
         # Merge datasets
         enhanced_players = merge_player_datasets(
-            players, career_stats, playoff_stats, draft, combine
+            players, career_stats, playoff_stats, draft, combine, ngs_stats
         )
 
         # Build output schema
